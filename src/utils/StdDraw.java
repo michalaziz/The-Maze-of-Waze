@@ -85,9 +85,9 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 import algorithms.Graph_Algo;
-import dataStructure.Node;
 import dataStructure.graph;
 import dataStructure.node_data;
+import elements.Node;
 import gui.Graph_GUI;
 
 /**

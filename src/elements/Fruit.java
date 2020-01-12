@@ -1,63 +1,71 @@
 package elements;
 
 import Server.fruits;
+import netscape.javascript.JSObject;
+import org.json.JSONObject;
 import utils.Point3D;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 public class Fruit {
-	
-	double value; 
-	int type; 
-	Point3D pos; 
-	
-	//ctor
-	public Fruit(double v, int t, Point3D p)
-	{
-		value=v;
-		type=t;
-		pos=new Point3D(p);
-	}
-	
-	public Fruit(Fruit f)
-	{
-		value= f.value;
-		type=f.type;
-		pos=new Point3D(f.pos);
-	}
-	
-	//Default ctor
-	public Fruit ()
-	{
-		value=0;
-		type=0;
-		pos=new Point3D(0,0,0);
-	}
-	
-	public void setVal(double v)
-	{
-		value=v;
-	}
-	
-	public void setType(int t)
-	{
-		type= t;
-	}
-	public void setPos(Point3D p)
-	{
-		pos= new Point3D(p);
-	}
-	
-	public double getVal()
-	{
-		return value;
-	}
-	
-	public int getType()
-	{
-		return type;
-	}
-	
-	public Point3D getPos()
-	{
-		return pos;
-	}
-}
+
+    private double value;
+    private int type;
+    private Point3D pos;
+    private String pic="";
+
+    //constructors
+    public Fruit(double v, int t, Point3D p, String pic)
+    {
+        this.value=v;
+        this.type=t;
+        this.pos=new Point3D(p);
+        this.pic=pic;
+    }
+
+    public Fruit(Fruit f)
+    {
+        this.value= f.value;
+        this.type=f.type;
+        this.pos=new Point3D(f.pos);
+        this.pic=f.pic;
+    }
+
+    //Default constructor
+    public Fruit ()
+    {
+        this.value=0;
+        this.type=0;
+        this.pos=null;
+        this.pic=pic;
+    }
+
+    public void setVal(double v)
+    {
+        this.value=v;
+    }
+
+    public void setType(int t)
+    {
+        this.type= t;
+    }
+
+    public void setPos(Point3D p)
+    {
+        pos= new Point3D(p);
+    }
+
+    public void setPic(String pic){
+        this.pic=pic;
+    }
+
+    public double getVal() { return this.value; }
+
+    public int getType() { return this.type; }
+
+    public Point3D getPos() { return this.pos; }
+
+    public String getPic() { return this.pic; }
+
+         }

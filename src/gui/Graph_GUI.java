@@ -13,9 +13,11 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
-import dataStructure.Node;
+
 import dataStructure.edge_data;
 import dataStructure.node_data;
+import elements.Node;
+import elements.Robot;
 
 import javax.swing.JFrame;
 
@@ -27,25 +29,23 @@ import utils.StdDraw;
 
 public class Graph_GUI extends JFrame implements Serializable {
 
-	private graph graph ;
+	private DGraph graph ;
 	private Graph_Algo gAlgo;
 
 	public Graph_Algo get_gAlgo()
 	{
 		return this.gAlgo;
 	}
-	public graph get_graph()
+	public DGraph get_graph()
 	{
 		return graph;
 	}
 	public Graph_GUI(graph g )
 	{
-		this.graph = g;	
+		this.graph = (DGraph)g;	
 		gAlgo=new Graph_Algo();
 		gAlgo.init(this.graph);
 		StdDraw.setGui(this);
-		initGUI();
-
 	}
 
 	public Graph_GUI()
@@ -64,35 +64,37 @@ public class Graph_GUI extends JFrame implements Serializable {
 	public void init(String name)
 	{
 		this.gAlgo.init(name);
-		this.graph= gAlgo.graph_A;
+		this.graph= (DGraph) gAlgo.graph_A;
 		initGUI();
 	}
 
 	public void setScale() {
-		int x_min = 0;
-		int x_max = 0;
-		int y_min = 0;
-		int y_max = 0;
+		double x_min = Double.MAX_VALUE;
+		Double x_max = Double.MIN_VALUE;
+		Double y_min = Double.MAX_VALUE;
+		Double y_max = Double.MIN_VALUE;
 
 		Iterator<node_data> iter = this.graph.getV().iterator();
 		while(iter.hasNext()) {
 			node_data currentNode = iter.next();
 			if(currentNode.getLocation().x() < x_min) {
-				x_min = (int) currentNode.getLocation().x();
+				x_min = (double) currentNode.getLocation().x();
 			}
 			if(currentNode.getLocation().x() > x_max) {
-				x_max = (int) currentNode.getLocation().x();
+				x_max = (double) currentNode.getLocation().x();
 			}
 			if(currentNode.getLocation().y() < y_min) {
-				y_min = (int) currentNode.getLocation().y();
+				y_min = (double) currentNode.getLocation().y();
 			}
 			if(currentNode.getLocation().y() > y_max) {
-				y_max = (int) currentNode.getLocation().y();
+				y_max = (double) currentNode.getLocation().y();
 			}
 		}
-		StdDraw.setCanvasSize(Math.abs(x_min+x_max) +300 , Math.abs(y_min+y_max)+300);
-		StdDraw.setXscale(x_min-10,x_max+10);
-		StdDraw.setYscale(y_min-10,y_max+10);
+		
+		StdDraw.setCanvasSize(Math.abs((int)(x_min+x_max))+1250,
+				Math.abs((int)(y_min+y_max))+550);
+		StdDraw.setXscale(x_min-0.0001,x_max+0.0001);
+		StdDraw.setYscale(y_min-0.001,y_max+0.001);
 	}
 
 	public void drawPoints()
@@ -107,7 +109,7 @@ public class Graph_GUI extends JFrame implements Serializable {
 			StdDraw.point(temp.getLocation().x(),temp.getLocation().y());
 			StdDraw.setPenColor(StdDraw.RED);
 			StdDraw.setPenRadius(0.001);
-			StdDraw.text(temp.getLocation().x()-0.1, temp.getLocation().y()-3,""+temp.getKey());;
+			StdDraw.text(temp.getLocation().x()-0.00050, temp.getLocation().y(),""+temp.getKey());
 		}
 	}
 
@@ -136,12 +138,12 @@ public class Graph_GUI extends JFrame implements Serializable {
 						graph.getNode(tempE.getDest()).getLocation().x()*7)/8),
 						((graph.getNode(tempE.getSrc()).getLocation().y())+
 								graph.getNode(tempE.getDest()).getLocation().y()*7)/8);
-				StdDraw.setPenColor(StdDraw.BOOK_BLUE);
-				StdDraw.text(((graph.getNode(tempE.getSrc()).getLocation().x()+
-						graph.getNode(tempE.getDest()).getLocation().x())/2),
-						((graph.getNode(tempE.getSrc()).getLocation().y())+
-								graph.getNode(tempE.getDest()).getLocation().y())/2,
-						""+tempE.getWeight());
+//				StdDraw.setPenColor(StdDraw.BOOK_BLUE);
+//				StdDraw.text(((graph.getNode(tempE.getSrc()).getLocation().x()+
+//						graph.getNode(tempE.getDest()).getLocation().x())/2),
+//						((graph.getNode(tempE.getSrc()).getLocation().y())+
+//								graph.getNode(tempE.getDest()).getLocation().y())/2,
+//						""+tempE.getWeight());
 			}
 		}
 	}

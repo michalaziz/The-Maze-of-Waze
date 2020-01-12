@@ -3,17 +3,26 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import algorithms.Graph_Algo;
+import elements.Edge;
+import elements.Fruit;
+import elements.Node;
+import elements.Robot;
 import utils.Point3D;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class DGraph implements graph,Serializable {
 
 	HashMap<Integer,node_data> nodes = new HashMap<>();
 	HashMap<Integer,HashMap<Integer,edge_data>> edges = new HashMap<>();	
+	public ArrayList<Robot> robots=new ArrayList<Robot>();
+	ArrayList<Fruit> fruits=new ArrayList<Fruit>();
 	int nodeSize=0;
 	int edgeSize=0;
+	int robotSize=0;
+	int fruitSize=0;
 	int MC=0;
 
 	/**
@@ -60,8 +69,7 @@ public class DGraph implements graph,Serializable {
 			return null ;
 		}
 	}
-
-
+	
 	/**
 	 * add a new node to the graph with the given node_data n.
 	 * @param n
@@ -75,6 +83,36 @@ public class DGraph implements graph,Serializable {
 			this.MC++;
 			this.nodeSize++;
 		}
+	}
+	/**
+	 * add robot to the graph game 
+	 * @param r
+	 */
+	public void addRobot(Robot r )
+	{
+		try {
+			robots.add(r);
+			robotSize++;
+			MC++;
+		}catch(Exception e){e.printStackTrace();}
+		
+	}
+	
+	/**
+	 * add fruit to the graph of the 
+	 * @param fr
+	 */
+	public void addFruit(Fruit fr)
+	{
+		try 
+		{
+			fruits.add(fr);
+			fruitSize++;
+			MC++;
+			
+			
+		}catch(Exception e){e.printStackTrace();}
+		
 	}
 
 	/**

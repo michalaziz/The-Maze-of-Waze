@@ -1,101 +1,104 @@
 package elements;
 
-import Server.robot;
+import org.json.JSONObject;
 import utils.Point3D;
 
 public class Robot {
 
-	int src;
-	Point3D pos; 
-	int id;
-	int dest;
-	int value;
-	int speed; 
+    private int src;
+    private Point3D pos;
+    private int id;
+    private int _dest;
+    private double value;
+    private int speed;
 
-	public Robot(int src, Point3D p, int id, int dest, int v, int speed)
-	{
-		src=src; 
-		pos=new Point3D(p);
-		id=id;
-		dest=dest;
-		value=v;
-		speed= speed;
-	}
+    //constructors
+    public Robot(int src, Point3D p, int id, int de, double v, int speed)
+    {
+        this.src=src;
+        this.pos=new Point3D(p);
+        this.id=id;
+        this._dest =de;
+        this.value=v;
+        this.speed= speed;
 
-	public Robot(Robot r)
-	{
-		src=r.src;
-		pos=new Point3D(r.pos);
-		id=r.id;
-		dest=r.dest;
-		value=r.value;
-		speed=r.speed;
-	}
+    }
 
-	//Default ctor
-	public Robot()
-	{
+    public Robot(Robot r)
+    {
+        this.src=r.src;
+        this.pos=new Point3D(r.pos);
+        this.id=r.id;
+        this._dest =r._dest;
+        this.value=r.value;
+        this.speed=r.speed;
+    }
 
-	}
+    //Default constructor
+    public Robot(){}
 
-	public void setSrc(int s)
-	{
-		src=s;
-	}
 
-	public void setPos(Point3D p)
-	{
-		pos=new Point3D(p);
-	}
+    // getters and setters
 
-	public void setID(int id)
-	{
-		id=id;
-	}
+    public void setSrc(int s)
+    {
+        this.src=s;
+    }
 
-	public void setDest(int d)
-	{
-		dest=d;
-	}
+    public void setPos(Point3D p)
+    {
+       this.pos=new Point3D(p);
+    }
 
-	public void setVal(int val)
-	{
-		value=val;
-	}
-	public void setSpeed(int s)
-	{
-		speed =s;
-	}
+    public void setID(int id)
+    {
+        this.id=id;
+    }
 
-	public int getSrc()
-	{
-		return src;
-	}
+    public void set_dest(int d)
+    {
+        this._dest =d;
+    }
 
-	public Point3D getPos()
-	{
-		return pos;
-	}
+    public void setVal(int val)
+    {
+        this.value=val;
+    }
 
-	public int getID()
-	{
-		return id;
-	}
+    public void setSpeed(int s)
+    {
+        this.speed =s;
+    }
 
-	public int getDest()
-	{
-		return dest;
-	}
 
-	public int getVal()
-	{
-		return value;
-	}
+    public int getSrc()
+    {
+        return this.src;
+    }
 
-	public int getSpeed()
-	{
-		return speed;
-	}
+    public Point3D getPos()
+    {
+        return this.pos;
+    }
 
+    public int getID()
+    {
+        return this.id;
+    }
+
+    public int get_dest()
+    {
+        return this._dest;
+    }
+
+    public double getVal()
+    {
+        return this.value;
+    }
+
+    public int getSpeed()
+    {
+        return this.speed;
+    }
 
 }
