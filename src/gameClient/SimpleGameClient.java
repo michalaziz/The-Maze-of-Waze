@@ -9,6 +9,8 @@ import org.json.JSONObject;
 
 import Server.Game_Server;
 import Server.game_service;
+import algorithms.Graph_Algo;
+import gui.Graph_GUI;
 import oop_dataStructure.OOP_DGraph;
 import oop_dataStructure.oop_edge_data;
 import oop_dataStructure.oop_graph;
@@ -52,6 +54,7 @@ public class SimpleGameClient {
 			int src_node = 0;  // arbitrary node, you should start at one of the fruits
 			for(int a = 0;a<rs;a++) {
 				game.addRobot(src_node+a);
+				
 			}
 		}
 		catch (JSONException e) {e.printStackTrace();}
