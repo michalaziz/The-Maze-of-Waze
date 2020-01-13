@@ -16,10 +16,12 @@ import java.util.LinkedList;
 
 import dataStructure.edge_data;
 import dataStructure.node_data;
+import elements.Fruit;
 import elements.Node;
 import elements.Robot;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import algorithms.Graph_Algo;
 import dataStructure.DGraph;
@@ -58,8 +60,25 @@ public class Graph_GUI extends JFrame implements Serializable {
 	public void initGUI() 
 	{	
 		this.setScale();
+
+
+		String[] options = {"Manual", "Automtic"};
+		int o=JOptionPane.showOptionDialog(null, "Select a game type", "game type"
+				,JOptionPane.DEFAULT_OPTION, 
+				JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+		switch(o)
+		{
+		case 0:
+			System.out.println("manual");
+			break;
+		case 1:
+			System.out.println("auto");
+			break;
+		}
 		this.drawPoints();
 		this.drawEdges();
+		this.drawRobots();
+		this.drawFruits();
 	}
 	public void init(String name)
 	{
@@ -90,11 +109,12 @@ public class Graph_GUI extends JFrame implements Serializable {
 				y_max = (double) currentNode.getLocation().y();
 			}
 		}
-		
+
 		StdDraw.setCanvasSize(Math.abs((int)(x_min+x_max))+1250,
 				Math.abs((int)(y_min+y_max))+550);
 		StdDraw.setXscale(x_min-0.0001,x_max+0.0001);
 		StdDraw.setYscale(y_min-0.001,y_max+0.001);
+
 	}
 
 	public void drawPoints()
@@ -109,7 +129,7 @@ public class Graph_GUI extends JFrame implements Serializable {
 			StdDraw.point(temp.getLocation().x(),temp.getLocation().y());
 			StdDraw.setPenColor(StdDraw.RED);
 			StdDraw.setPenRadius(0.001);
-			StdDraw.text(temp.getLocation().x()-0.00050, temp.getLocation().y(),""+temp.getKey());
+			StdDraw.text(temp.getLocation().x()-0.00028, temp.getLocation().y(),""+temp.getKey());
 		}
 	}
 
@@ -126,7 +146,7 @@ public class Graph_GUI extends JFrame implements Serializable {
 			while(iterE.hasNext())
 			{
 				StdDraw.setPenRadius(0.003);
-				StdDraw.setPenColor(StdDraw.BLACK);
+				StdDraw.setPenColor(StdDraw.GRAY);
 				edge_data tempE=iterE.next();
 				StdDraw.line(graph.getNode(tempE.getSrc()).getLocation().x(),
 						graph.getNode(tempE.getSrc()).getLocation().y(),
@@ -138,13 +158,38 @@ public class Graph_GUI extends JFrame implements Serializable {
 						graph.getNode(tempE.getDest()).getLocation().x()*7)/8),
 						((graph.getNode(tempE.getSrc()).getLocation().y())+
 								graph.getNode(tempE.getDest()).getLocation().y()*7)/8);
-//				StdDraw.setPenColor(StdDraw.BOOK_BLUE);
-//				StdDraw.text(((graph.getNode(tempE.getSrc()).getLocation().x()+
-//						graph.getNode(tempE.getDest()).getLocation().x())/2),
-//						((graph.getNode(tempE.getSrc()).getLocation().y())+
-//								graph.getNode(tempE.getDest()).getLocation().y())/2,
-//						""+tempE.getWeight());
+				//				StdDraw.setPenColor(StdDraw.BOOK_BLUE);
+				//				StdDraw.text(((graph.getNode(tempE.getSrc()).getLocation().x()+
+				//						graph.getNode(tempE.getDest()).getLocation().x())/2),
+				//						((graph.getNode(tempE.getSrc()).getLocation().y())+
+				//								graph.getNode(tempE.getDest()).getLocation().y())/2,
+				//						""+tempE.getWeight());
 			}
 		}
+	}
+
+	public void drawFruits()
+	{
+		Iterator<Fruit> iter=graph.fruits.iterator();	
+		while(iter.hasNext())
+		{
+			Fruit current = iter.next();
+			double x= current.getPos().x();
+			double y= current.getPos().y();
+			StdDraw.picture(x, y, current.getPic(), 0.00048, 0.00048);
+		}
+	}
+
+	public void drawRobots()
+	{
+		Iterator<Robot> iter=graph.robots.iterator();
+		while(iter.hasNext())
+		{
+			Robot current = iter.next();
+			double x = current.getPos().x();
+			double y = current.getPos().y();
+			StdDraw.picture(x,y,"rob.png",0.0004,0.0004);
+		}
+
 	}
 }

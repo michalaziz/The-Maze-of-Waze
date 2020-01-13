@@ -730,58 +730,17 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		frame.pack();
 		frame.requestFocusInWindow();
 		frame.setVisible(true);
+
+
 	}
 
 	// create the menu bar (changed to private)
 	private static  JMenuBar createMenuBar() {
-		JMenuBar menuBar = new JMenuBar();
 
-		//file
-		JMenu menuFile = new JMenu("File");
-		menuBar.add(menuFile);
-		JMenuItem save = new JMenuItem("Save");
-		JMenuItem load = new JMenuItem("Load");
-		menuFile.add(save );
-		menuFile.add(load);
-		save .addActionListener(std);
-		load.addActionListener(std);
 
-		//node
-		JMenu menuNode = new JMenu("Node");
-		menuBar.add(menuNode);
-		JMenuItem add = new JMenuItem("Add Node");
-		JMenuItem removeNode = new JMenuItem("Remove Node");
-		menuNode.add(add);
-		menuNode.add(removeNode);
-		add .addActionListener(std);
-		removeNode.addActionListener(std);
 
-		//edge
-		JMenu menuEdge = new JMenu("Edge");
-		menuBar.add(menuEdge);
-		JMenuItem connect = new JMenuItem("Connect");
-		JMenuItem removeEdge= new JMenuItem("Remove Edge");
-		menuEdge.add(connect);
-		menuEdge.add(removeEdge);
-		connect .addActionListener(std);
-		removeEdge.addActionListener(std);
+		return null;
 
-		//algorithems
-		JMenu menuAlgo = new JMenu("Algorithems");
-		menuBar.add(menuAlgo);
-		JMenuItem isConnected = new JMenuItem("Is Connected");
-		JMenuItem shortestPathDist = new JMenuItem("Shortest Path Dist");
-		JMenuItem shortestPath = new JMenuItem("Shortest Path");
-		JMenuItem TSP = new JMenuItem("TSP");
-		menuAlgo.add(isConnected);
-		menuAlgo.add(shortestPathDist);
-		menuAlgo.add(shortestPath);
-		menuAlgo.add(TSP);
-		isConnected.addActionListener(std);
-		shortestPathDist .addActionListener(std);
-		shortestPath.addActionListener(std);
-		TSP.addActionListener(std);
-		return menuBar;
 	}
 
 
@@ -1726,25 +1685,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		}
 	}
 
-	//	public void load(String filename)
-	//	{
-	//		graph g= this.graph_A;
-	//		File f= new File (filename); 
-	//		try {
-	//			FileInputStream fis= new FileInputStream(f);
-	//			ObjectInputStream ois= new ObjectInputStream(fis);
-	//			g= (graph) ois.readObject();
-	//			ois.close();
-	//			fis.close();
-	//
-	//		} catch (FileNotFoundException e) {
-	//			e.printStackTrace();
-	//		} catch (IOException e) {
-	//			e.printStackTrace();
-	//		} catch (ClassNotFoundException e) {
-	//			e.printStackTrace();
-	//		}
-	//	}
+
 
 	/**
 	 * This method cannot be called directly.
@@ -1752,156 +1693,11 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		switch(e.getActionCommand())
-		{
-		case "Save":
-			String fileName = JOptionPane.showInputDialog(null, "File name: ");
-			if (fileName != null) {
-				gGui.get_gAlgo().save(fileName);
-			}
-			break;
 
-
-		case "Load":
-			String path = "C:\\Users\\HP\\eclipse-workspace\\oop-Ex2";
-			File folder = new File(path);
-			File[] possibleValues = folder.listFiles();
-			Object selectedValue = JOptionPane.showInputDialog(null, "Choose file", "Message",
-					JOptionPane.INFORMATION_MESSAGE, null, possibleValues, possibleValues[0]);
-
-			if (selectedValue!=null)
-				gGui.init(selectedValue.toString());
-
-			break;
-		case "Add Node" :
-			try {
-				String  k =JOptionPane.showInputDialog(null, "Enter Key: ");
-				int key= Integer.parseInt(k);
-				String w=JOptionPane.showInputDialog(null, "Enter Weight: ");
-				double weight= Double.parseDouble(w);
-				String t=JOptionPane.showInputDialog(null, "Enter Tag: ");
-				int tag= Integer.parseInt(t);
-				String p=JOptionPane.showInputDialog(null, "Enter Location: ");
-				Point3D point = new Point3D(p);
-				String info = JOptionPane.showInputDialog(null, "Enter Info: ");
-				Node n =new Node(key, weight,tag, point,info);
-				gGui.get_gAlgo().graph_A.addNode(n);
-				gGui.initGUI();
-			}catch(Exception e1)
-			{
-				JOptionPane.showMessageDialog(null, "not in format", "Message", 0);
-			}
-			break;
-		case "Remove Node":
-			try {
-				String  k =JOptionPane.showInputDialog(null, "Enter Key: ");
-				int key=Integer.parseInt(k);
-				gGui.get_gAlgo().graph_A.removeNode(key);
-				gGui.initGUI();
-			}catch(Exception e1)
-			{
-				JOptionPane.showMessageDialog(null, "cant creat this key", "Message", 0);
-			}
-			break;
-		case "Connect":
-			try {
-				String  src =JOptionPane.showInputDialog(null, "Enter source: ");
-				String  dest =JOptionPane.showInputDialog(null, "Enter destenation: ");
-				String weight=JOptionPane.showInputDialog(null, "Enter Weight: ");
-				gGui.get_gAlgo().graph_A.connect(Integer.parseInt(src), Integer.parseInt(dest),Double.parseDouble(weight));
-				gGui.initGUI();
-			}catch(Exception e1) {
-				JOptionPane.showMessageDialog(null, "cant creat this edge", "Message", 0);
-			}
-			break;
-		case "Remove Edge":
-			try {
-				String  src =JOptionPane.showInputDialog(null, "Enter source: ");
-				String  dest =JOptionPane.showInputDialog(null, "Enter destenation: ");
-				gGui.get_gAlgo().graph_A.removeEdge(Integer.parseInt(src), Integer.parseInt(dest));
-				gGui.initGUI();
-			}catch(Exception e1) {
-				System.out.println("cant remove this edge");
-			}
-			break;
-		case "Is Connected":
-			if(gGui.get_graph().nodeSize()==0)
-				break;
-			try {
-				boolean ans= gGui.get_gAlgo().isConnected();
-				if(ans==true)
-					JOptionPane.showMessageDialog(null, "The graph is CONNECT", "Is Connect", 2);
-
-				else
-					JOptionPane.showMessageDialog(null, "The graph is DISCONNECT", "Is Connect", 0);
-			}catch(Exception e1) {
-				JOptionPane.showMessageDialog(null, "Error has been occurs", "Message", 0);
-			}
-			break;
-
-		case "Shortest Path Dist":
-			try {
-				String src = JOptionPane.showInputDialog(null, "Enter sourc: ");
-				String dest = JOptionPane.showInputDialog(null, "Enter destination: ");
-				double res = gGui.get_gAlgo().shortestPathDist(Integer.parseInt(src), Integer.parseInt(dest));
-				JOptionPane.showMessageDialog(null,"The shortest Path Distence is: "+ res);		
-
-			}
-			catch (Exception e2) {
-				JOptionPane.showMessageDialog(null, "Error has been occurs");		
-			}
-			break;
-		case"Shortest Path":
-			try {
-				String src = JOptionPane.showInputDialog(null, "Enter sourc: ");
-				String dest = JOptionPane.showInputDialog(null, "Enter destination: ");
-				List<node_data> shortest = new ArrayList<node_data>();
-				shortest= gGui.get_gAlgo().shortestPath(Integer.parseInt(src), Integer.parseInt(dest));
-				Iterator<node_data> iter = shortest.iterator();
-				String s= "";
-				while(iter.hasNext())
-				{
-					s+=(((Node)iter.next()).keytoString());
-					if(!iter.hasNext())
-						break;
-					s+="->";
-				}
-				JOptionPane.showMessageDialog(null,"The shortest Path is: "+s);		
-			}
-			catch (Exception e2) {
-				JOptionPane.showMessageDialog(null, "Error has been occurs");		
-			}
-			break;
-		case "TSP":
-			try {
-			List<Integer> targets = new ArrayList<>();
-			List<node_data> resTSP = new ArrayList<node_data>();
-			String trg="",s="";
-			while(true)
-			{
-				trg = JOptionPane.showInputDialog(null, "Enter vertex one by one press / to end:");
-				if(trg.equals("/"))
-					break;
-				targets.add(Integer.parseInt(trg));
-			}
-			resTSP=gGui.get_gAlgo().TSP(targets);
-			Iterator<node_data> iter = resTSP.iterator();
-			while(iter.hasNext())
-			{
-				s+=(((Node)iter.next()).keytoString());
-				if(!iter.hasNext())
-					break;
-				s+="->";
-			}
-			JOptionPane.showMessageDialog(null,"The TSP is: "+s);
-			}catch(Exception e2) {
-				JOptionPane.showMessageDialog(null,"Error has been occurs");
-			}
-			break;
-		}
 
 
 	}
+
 
 
 
