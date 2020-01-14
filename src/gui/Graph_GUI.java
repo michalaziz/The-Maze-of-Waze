@@ -59,27 +59,13 @@ public class Graph_GUI extends JFrame implements Serializable {
 
 	public void initGUI() 
 	{	
+
 		this.setScale();
-
-
-		String[] options = {"Manual", "Automtic"};
-		int o=JOptionPane.showOptionDialog(null, "Select a game type", "game type"
-				,JOptionPane.DEFAULT_OPTION, 
-				JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-		switch(o)
-		{
-		case 0:
-			System.out.println("manual");
-			break;
-		case 1:
-			System.out.println("auto");
-			break;
-		}
 		this.drawPoints();
 		this.drawEdges();
-		this.drawRobots();
-		this.drawFruits();
 	}
+	
+	
 	public void init(String name)
 	{
 		this.gAlgo.init(name);
@@ -168,28 +154,4 @@ public class Graph_GUI extends JFrame implements Serializable {
 		}
 	}
 
-	public void drawFruits()
-	{
-		Iterator<Fruit> iter=graph.fruits.iterator();	
-		while(iter.hasNext())
-		{
-			Fruit current = iter.next();
-			double x= current.getPos().x();
-			double y= current.getPos().y();
-			StdDraw.picture(x, y, current.getPic(), 0.00048, 0.00048);
-		}
-	}
-
-	public void drawRobots()
-	{
-		Iterator<Robot> iter=graph.robots.iterator();
-		while(iter.hasNext())
-		{
-			Robot current = iter.next();
-			double x = current.getPos().x();
-			double y = current.getPos().y();
-			StdDraw.picture(x,y,"rob.png",0.0004,0.0004);
-		}
-
-	}
 }

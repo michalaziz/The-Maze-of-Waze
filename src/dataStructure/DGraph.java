@@ -7,6 +7,9 @@ import elements.Edge;
 import elements.Fruit;
 import elements.Node;
 import elements.Robot;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import utils.Point3D;
 
 import java.io.Serializable;
@@ -16,9 +19,7 @@ import java.util.Collection;
 public class DGraph implements graph,Serializable {
 
 	HashMap<Integer,node_data> nodes = new HashMap<>();
-	HashMap<Integer,HashMap<Integer,edge_data>> edges = new HashMap<>();	
-	public ArrayList<Robot> robots=new ArrayList<Robot>();
-	public ArrayList<Fruit> fruits=new ArrayList<Fruit>();
+	HashMap<Integer,HashMap<Integer,edge_data>> edges = new HashMap<>();
 	int nodeSize=0;
 	int edgeSize=0;
 	int robotSize=0;
@@ -34,7 +35,7 @@ public class DGraph implements graph,Serializable {
 		this.edges = new HashMap<Integer,HashMap<Integer,edge_data>>();
 		this.MC=0;
 		this.edgeSize=0;
-		this.nodeSize=0;	
+		this.nodeSize=0;
 	}
 
 	/**
@@ -45,7 +46,7 @@ public class DGraph implements graph,Serializable {
 	public node_data getNode(int key) {
 
 		if(!this.nodes.containsKey(key))
-		{	
+		{
 			return null;
 		}
 		else {return this.nodes.get(key);}
@@ -69,7 +70,7 @@ public class DGraph implements graph,Serializable {
 			return null ;
 		}
 	}
-	
+
 	/**
 	 * add a new node to the graph with the given node_data n.
 	 * @param n
@@ -84,36 +85,8 @@ public class DGraph implements graph,Serializable {
 			this.nodeSize++;
 		}
 	}
-	/**
-	 * add robot to the graph game 
-	 * @param r
-	 */
-	public void addRobot(Robot r )
-	{
-		try {
-			robots.add(r);
-			robotSize++;
-			MC++;
-		}catch(Exception e){e.printStackTrace();}
-		
-	}
-	
-	/**
-	 * add fruit to the graph of the 
-	 * @param fr
-	 */
-	public void addFruit(Fruit fr)
-	{
-		try 
-		{
-			fruits.add(fr);
-			fruitSize++;
-			MC++;
-			
-			
-		}catch(Exception e){e.printStackTrace();}
-		
-	}
+
+
 
 	/**
 	 * This functuon connect an edge with weight w between node src to node dest.
@@ -178,17 +151,17 @@ public class DGraph implements graph,Serializable {
 			nodeSize--;
 		}
 
-		for (Iterator<Integer> iter = nodes.keySet().iterator(); iter.hasNext();) 
+		for (Iterator<Integer> iter = nodes.keySet().iterator(); iter.hasNext();)
 			removeEdge(iter.next(), key);
 
-		for (Iterator<Integer> iter2 = nodes.keySet().iterator(); iter2.hasNext();) 
+		for (Iterator<Integer> iter2 = nodes.keySet().iterator(); iter2.hasNext();)
 			removeEdge(key,iter2.next());
 		return removed;
 	}
 
 
 	/**
-	 * remove the edge the starts at node src and ends at node dest 
+	 * remove the edge the starts at node src and ends at node dest
 	 */
 	/**
 	 * This function delete the edge from the graph by src and dest keys.
@@ -233,4 +206,5 @@ public class DGraph implements graph,Serializable {
 		return this.MC;
 	}
 
-}
+
+	}

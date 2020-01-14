@@ -37,6 +37,24 @@ public class Robot {
     //Default constructor
     public Robot(){}
 
+    
+    
+    public void initRobot(String string) {
+
+        try {
+            JSONObject obj1 = new JSONObject(string);
+            JSONObject obj2 = obj1.getJSONObject("Robot");
+            this.id = obj2.getInt("id");
+            this._dest = obj2.getInt("dest");
+            this.src = obj2.getInt("src");
+            this.speed = obj2.getInt("speed");
+            String pos = obj2.getString("pos");
+            String[] loc = pos.split(",");
+            this.pos = new Point3D(Double.parseDouble(loc[0]), Double.parseDouble(loc[1]), Double.parseDouble(loc[2]));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     // getters and setters
 
