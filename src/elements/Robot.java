@@ -8,19 +8,25 @@ public class Robot {
     private int src;
     private Point3D pos;
     private int id;
-    private int _dest;
     private double value;
     private int speed;
 
     //constructors
-    public Robot(int src, Point3D p, int id, int de, double v, int speed)
+    public Robot(int src, Point3D p, int id, double v, int speed)
     {
         this.src=src;
         this.pos=new Point3D(p);
         this.id=id;
-        this._dest =de;
         this.value=v;
         this.speed= speed;
+
+    }
+    
+    public Robot(int src, int id, Point3D p)
+    {
+        this.src=src;
+        this.pos=new Point3D(p);
+        this.id=id;
 
     }
 
@@ -29,7 +35,6 @@ public class Robot {
         this.src=r.src;
         this.pos=new Point3D(r.pos);
         this.id=r.id;
-        this._dest =r._dest;
         this.value=r.value;
         this.speed=r.speed;
     }
@@ -45,7 +50,6 @@ public class Robot {
             JSONObject obj1 = new JSONObject(string);
             JSONObject obj2 = obj1.getJSONObject("Robot");
             this.id = obj2.getInt("id");
-            this._dest = obj2.getInt("dest");
             this.src = obj2.getInt("src");
             this.speed = obj2.getInt("speed");
             String pos = obj2.getString("pos");
@@ -73,11 +77,6 @@ public class Robot {
         this.id=id;
     }
 
-    public void set_dest(int d)
-    {
-        this._dest =d;
-    }
-
     public void setVal(int val)
     {
         this.value=val;
@@ -102,11 +101,6 @@ public class Robot {
     public int getID()
     {
         return this.id;
-    }
-
-    public int get_dest()
-    {
-        return this._dest;
     }
 
     public double getVal()

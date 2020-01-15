@@ -207,4 +207,39 @@ public class DGraph implements graph,Serializable {
 	}
 
 
+	public void init( String graph){
+
+		try {
+			JSONObject line= new JSONObject(graph);
+			JSONArray nodes = line.getJSONArray("Nodes");
+			System.out.println(nodes.length());
+			for(int i=0; i<nodes.length(); i++)
+			{
+				JSONObject current= nodes.getJSONObject(i);
+				int key= current.getInt("id");
+				Object pos = current.get("pos");
+				Point3D p=new Point3D(pos.toString());
+				Node n = new Node(key,p);
+				this.addNode(n);
+			}
+
+		}catch(Exception e){e.printStackTrace();}
+
+		try {
+			JSONObject line= new JSONObject(graph);
+			JSONArray edges = line.getJSONArray("Edges");
+			System.out.println(edges.length());
+			for(int i=0; i<edges.length(); i++)
+			{
+				JSONObject current= edges.getJSONObject(i);
+				int src= current.getInt("src");
+				double weigth = current.getDouble("w");
+				int dest = current.getInt("dest");
+				this.connect(src, dest, weigth);
+			}
+
+		}catch(Exception e){e.printStackTrace();}
 	}
+
+
+}
