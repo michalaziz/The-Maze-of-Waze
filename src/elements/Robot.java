@@ -22,7 +22,7 @@ public class Robot {
 
     }
     
-    public Robot(int src, int id, Point3D p)
+    public Robot(int id, int src, Point3D p)
     {
         this.src=src;
         this.pos=new Point3D(p);

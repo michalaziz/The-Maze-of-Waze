@@ -35,24 +35,27 @@ public class MyGameGUI extends Thread{
 	public String typeGame;
 	public int scenario_num;
 	public game_service game;
-	public Auto_Game a_g;
+	public Auto_Game a_g=new Auto_Game();
 	List<Fruit> fruits_arr;
 	List<Robot> robots_arr;
 
 
 	public MyGameGUI()
 	{
-		//a_g.setMyGameGUI(this);
+		a_g=new Auto_Game();
+		a_g.setMyGameGUI(this);
 		selectGame();
 	}
+
+
 
 	public void selectGame()
 	{
 
 		String st = JOptionPane.showInputDialog(null, "Choose scenario number between 0-23 :");
 		scenario_num = Integer.parseInt(st);
-		if (scenario_num > 23 || scenario_num < 0) 
-			JOptionPane.showMessageDialog(null, "The number that you entered isn't a Scenario number ");  
+		if (scenario_num > 23 || scenario_num < 0)
+			JOptionPane.showMessageDialog(null, "The number that you entered isn't a Scenario number ");
 		else {
 			String[] options = {"Manual", "Automtic"};
 			int option = JOptionPane.showOptionDialog(null, "Select a game type", "game type"
@@ -65,12 +68,12 @@ public class MyGameGUI extends Thread{
 			else//automatic
 			{
 				a_g.startGame(scenario_num);
+				//autoGame();
 			}
 		}
-
 	}
 
-
+	static int ii=0;
 	public void manualGame()
 	{
 		this.game = Game_Server.getServer(scenario_num);
@@ -81,25 +84,34 @@ public class MyGameGUI extends Thread{
 		System.out.println(game.toString());
 		fruits_arr = initFruits();
 		robots_arr = initRobots();
-		StdDraw.clear();
 		paint();
 		addRobotManual();
 		drawRobots();
 		game.startGame();
-		this.start();
+
+		while(game.isRunning())
+		{
+
+			moveRobotManual();	
+//			StdDraw.clear();
+//			drawPoints();
+//			drawEdges();
+//			drawFruits();
+//			drawRobots();
+//			StdDraw.enableDoubleBuffering();
+//			StdDraw.show();
+		}
+
+
+		//this.start();
 	}
 
-	public int robors_size()
-	{
-		int rs=0;
-		try {
-			String x = game.toString();
-			JSONObject l = new JSONObject(x);
-			JSONObject ttt = l.getJSONObject("GameServer");
-			rs= ttt.getInt("robots");
-
-		}catch(Exception e) {e.printStackTrace();}
-		return rs;
+	public void paint() {
+		setScale();
+		drawPoints();
+		drawEdges();
+		drawFruits();
+		StdDraw.show();
 	}
 
 
@@ -117,25 +129,193 @@ public class MyGameGUI extends Thread{
 		{
 			node_data n=d_g.getNode(keyRobotsList[i]);
 			robots_arr.add(new Robot(i,keyRobotsList[i],n.getLocation()));
+			game.addRobot(keyRobotsList[i]);
 		}
 
 	}
 
-	public void automaticGame() 
+	public void test ()
 	{
-
+		//StdDraw.enableDoubleBuffering();
+		if(StdDraw.isMousePressed())
+		{
+			System.out.println("yes "+ ii);
+			double x= StdDraw.mouseX();
+			double y = StdDraw.mouseY();
+			StdDraw.setPenRadius(0.02);
+			StdDraw.setPenColor(StdDraw.BLACK);
+			StdDraw.point(x, y);
+		}
 	}
 
-	public void paint() {
-		setScale();
-		drawPoints();
-		drawEdges();
-		drawFruits();
-		//drawRobots();
-		StdDraw.show();
+
+	public void moveRobotManual()
+	{
+		Robot closest=null;
+		boolean isOk=false;
+
+		double x=-100000,y=-100000;
+		boolean flagSrc=false;
+
+		node_data nDest=new Node();
+		if(StdDraw.isMousePressed() && flagSrc==false)
+		{
+			System.out.println("enterde src");
+			flagSrc=true;
+			//StdDraw.enableDoubleBuffering();
+			x=StdDraw.mouseX();
+			y=StdDraw.mouseY();
+			Point3D pSrc =new Point3D(x,y);
+			closest = new Robot(findClosestRobot(pSrc));
+			System.out.println(closest.getID());
+
+		}
+
+
+		if(closest!=null)//find the next to move
+		{
+
+			System.out.println("desttt");
+			
+			x=StdDraw.mouseX();
+			y=StdDraw.mouseY();
+			Point3D pDest =new Point3D(x,y);
+			nDest=findClosestNode(pDest);	
+
+			Iterator<edge_data> iter=d_g.getE(closest.getSrc()).iterator();
+
+			while(iter.hasNext())
+			{
+				if(iter.next().getDest()==nDest.getKey())
+				{
+					//game.chooseNextEdge(closest.getID(),nDest.getKey());
+					int id= closest.getID();
+					int src= closest.getSrc();
+					Robot r= new Robot(id, src, pDest);
+					this.robots_arr.clear();
+					System.out.println(robots_arr.size());
+					this.robots_arr.add(r);
+					StdDraw.clear();
+					drawPoints();
+					drawEdges();
+					drawFruits();
+					drawRobots();
+					//StdDraw.enableDoubleBuffering();
+					StdDraw.show();
+					
+					//closest.setPos(pDest);
+					//StdDraw.enableDoubleBuffering();
+
+					//StdDraw.picture(nDest.getLocation().x(), nDest.getLocation().y(), "rob.png", 0.0004, 0.0004);     
+				}
+			}
+		}
+
+
+
+		//		System.out.println(x);
+		//		System.out.println(y);
+		//		System.out.println(closest.getSrc());
+		//		System.out.println(robots_arr.size());
+	}
+	//		node_data nDest=new Node();
+	//		if(flagSrc==true)
+	//		{
+	//			StdDraw.enableDoubleBuffering();
+	//			x=StdDraw.mouseX();
+	//			y=StdDraw.mouseY();
+	//			Point3D pDest =new Point3D(x,y);
+	//			nDest=findClosestNode(pDest);	
+	//
+	//			Iterator<edge_data> iter=d_g.getE(closest.getSrc()).iterator();
+	//
+	//			while(iter.hasNext()&&isOk==false)
+	//			{
+	//				if(iter.next().getDest()==nDest.getKey())
+	//				{
+	//					game.chooseNextEdge(closest.getID(),nDest.getKey());
+	//					isOk=true;
+	//				}
+	//			}
+	//		}
+	//		else
+	//			JOptionPane.showMessageDialog(null, "try again dest");
+	//		if(isOk==true)
+	//		{
+	//			StdDraw.picture(nDest.getLocation().x(), nDest.getLocation().y(), "rob.png", 0.0004, 0.0004);
+	//			StdDraw.show();
+	//		}
+
+
+
+
+
+	public Robot findClosestRobot(Point3D pos)
+	{
+		Double min = Double.MAX_VALUE;
+		Robot closest =null;
+
+		for(int i=0; i<robots_arr.size(); i++)
+		{
+			double distance = robots_arr.get(i).getPos().distance3D(pos);
+			if(distance<min)
+			{
+				min = distance;
+				closest = robots_arr.get(i);
+			}
+		}
+
+		return closest;
+	}
+
+	public node_data findClosestNode(Point3D pos)
+	{
+		Double min = Double.MAX_VALUE;
+		node_data closest =null;
+		Iterator<node_data> iter= d_g.getV().iterator();
+		while(iter.hasNext())
+		{
+			node_data next = iter.next();
+			double distance = next.getLocation().distance3D(pos);
+			if(distance<min)
+			{
+				min = distance;
+				closest=next;
+			}
+		}		
+		return closest;
 	}
 
 
+	public int robors_size()
+	{
+		int rs=0;
+		try {
+			String x = game.toString();
+			JSONObject l = new JSONObject(x);
+			JSONObject ttt = l.getJSONObject("GameServer");
+			rs= ttt.getInt("robots");
+
+		}catch(Exception e) {e.printStackTrace();}
+		return rs;
+	}
+
+	public void initRobots(String str)
+	{
+		try {
+			JSONObject rlist = new JSONObject(str);
+			JSONObject current= rlist.getJSONObject("Robot");
+			int src = current.getInt("src");
+			Object pos = current.get("pos");
+			Point3D p=new Point3D(pos.toString());
+			int id = current.getInt("id");
+			int dest = current.getInt("dest");
+			double value = current.getDouble("value");
+			int speed = current.getInt("speed");
+			Robot robot = new Robot(id, src, p);
+			this.robots_arr.add(robot);
+		}catch(Exception e) {e.printStackTrace();}
+	}
 
 	public List<Robot> initRobots() {
 		List<String> rob = this.game.getRobots();
@@ -160,34 +340,6 @@ public class MyGameGUI extends Thread{
 			res.add(f);
 		}
 		return res;
-	}
-
-
-
-	public void moveRobots(game_service game, DGraph gg) {
-		List<String> log = game.move();
-		if (log != null) {
-			long time = game.timeToEnd();
-			for (int i = 0; i < log.size(); i++) {
-				String robot_json = log.get(i);
-				try {
-					JSONObject line = new JSONObject(robot_json);
-					JSONObject robotM = line.getJSONObject("Robot");
-					int key = robotM.getInt("id");
-					int src = robotM.getInt("src");
-					int desti = robotM.getInt("dest");
-
-					if (desti == -1) { // the robot on node
-						desti = nextNode(gg, src);
-						game.chooseNextEdge(key, desti);
-						System.out.println("Turn to node: " + desti + "  time to end:" + (time / 1000));
-						System.out.println(robotM);
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		}
 	}
 
 
@@ -287,6 +439,7 @@ public class MyGameGUI extends Thread{
 				y_max = (double) currentNode.getLocation().y();
 			}
 		}
+
 
 		StdDraw.setCanvasSize(Math.abs((int) (x_min + x_max)) + 1250,
 				Math.abs((int) (y_min + y_max)) + 550);

@@ -22,8 +22,6 @@ public class DGraph implements graph,Serializable {
 	HashMap<Integer,HashMap<Integer,edge_data>> edges = new HashMap<>();
 	int nodeSize=0;
 	int edgeSize=0;
-	int robotSize=0;
-	int fruitSize=0;
 	int MC=0;
 
 	/**
@@ -209,6 +207,7 @@ public class DGraph implements graph,Serializable {
 
 	public void init( String graph){
 
+		//init nodes
 		try {
 			JSONObject line= new JSONObject(graph);
 			JSONArray nodes = line.getJSONArray("Nodes");
@@ -221,10 +220,12 @@ public class DGraph implements graph,Serializable {
 				Point3D p=new Point3D(pos.toString());
 				Node n = new Node(key,p);
 				this.addNode(n);
+				
 			}
 
 		}catch(Exception e){e.printStackTrace();}
 
+		//init edges
 		try {
 			JSONObject line= new JSONObject(graph);
 			JSONArray edges = line.getJSONArray("Edges");
