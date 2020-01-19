@@ -13,15 +13,13 @@ public class Fruit {
 	private double value;
 	private int type;
 	private Point3D pos;
-	private String pic="";
 
 	//constructors
-	public Fruit(double v, int t, Point3D p, String pic)
+	public Fruit(double v, int t, Point3D p)
 	{
 		this.value=v;
 		this.type=t;
 		this.pos=new Point3D(p);
-		this.pic=pic;
 	}
 
 	public Fruit(Fruit f)
@@ -29,7 +27,7 @@ public class Fruit {
 		this.value= f.value;
 		this.type=f.type;
 		this.pos=new Point3D(f.pos);
-		this.pic=f.pic;
+
 	}
 
 	//Default constructor
@@ -38,7 +36,7 @@ public class Fruit {
 		this.value=0;
 		this.type=0;
 		this.pos=null;
-		this.pic=pic;
+
 	}
 
 
@@ -50,8 +48,7 @@ public class Fruit {
 			this.type = obj2.getInt("type");
 			this.value = obj2.getDouble("value");
 			String pos = obj2.getString("pos");
-			String[] loc2 = pos.split(",");
-			this.pos = new Point3D(Double.parseDouble(loc2[0]), Double.parseDouble(loc2[1]), Double.parseDouble(loc2[2]));
+			this.pos = new Point3D(pos);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -75,9 +72,7 @@ public class Fruit {
 		pos= new Point3D(p);
 	}
 
-	public void setPic(String pic){
-		this.pic=pic;
-	}
+
 
 	public double getVal() { return this.value; }
 
@@ -85,6 +80,5 @@ public class Fruit {
 
 	public Point3D getPos() { return this.pos; }
 
-	public String getPic() { return this.pic; }
 
 }

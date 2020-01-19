@@ -1,5 +1,9 @@
 package elements;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.json.JSONObject;
 import utils.Point3D;
 
@@ -10,15 +14,17 @@ public class Robot {
     private int id;
     private double value;
     private int speed;
+	private int dest;
 
     //constructors
-    public Robot(int src, Point3D p, int id, double v, int speed)
+    public Robot(int src,int dest, Point3D p, int id, double v, int speed)
     {
         this.src=src;
         this.pos=new Point3D(p);
         this.id=id;
         this.value=v;
         this.speed= speed;
+        this.dest=dest;
 
     }
     
@@ -40,25 +46,49 @@ public class Robot {
     }
 
     //Default constructor
-    public Robot(){}
+    public Robot(){
+    	this.id=0;
+    	this.pos=null;
+    	this.src=0;
+    	this.dest=0;
+    }
 
-    
-    
-    public void initRobot(String string) {
-
+    public void initRobot(String str){
         try {
-            JSONObject obj1 = new JSONObject(string);
+            JSONObject obj1 = new JSONObject(str);
             JSONObject obj2 = obj1.getJSONObject("Robot");
             this.id = obj2.getInt("id");
             this.src = obj2.getInt("src");
-            this.speed = obj2.getInt("speed");
+            this.dest = obj2.getInt("dest");
             String pos = obj2.getString("pos");
-            String[] loc = pos.split(",");
-            this.pos = new Point3D(Double.parseDouble(loc[0]), Double.parseDouble(loc[1]), Double.parseDouble(loc[2]));
+            this.pos = new Point3D(pos);
+        }catch (Exception e){e.printStackTrace();}
+
+    }
+    
+    public Robot initRobotJson(String str) {
+    	Robot temp = new Robot();
+
+        try {
+            JSONObject obj1 = new JSONObject(str);
+            JSONObject obj2 = obj1.getJSONObject("Robot");
+            temp.id = obj2.getInt("id");
+            temp.src = obj2.getInt("src");
+            temp.dest = obj2.getInt("dest");
+            String pos = obj2.getString("pos");
+            temp.pos = new Point3D(pos);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return temp;
     }
+    
+	public ArrayList<Robot> initRobots(List<String>robotList) {
+		ArrayList<Robot> ans = new ArrayList<>();
+		for(String r:robotList)
+			ans.add(initRobotJson(r));
+		return ans;
+	}
 
     // getters and setters
 
