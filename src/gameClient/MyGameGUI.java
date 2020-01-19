@@ -1,6 +1,7 @@
 package gameClient;
 
 import java.awt.*;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -9,8 +10,6 @@ import java.util.List;
 import javax.swing.*;
 
 import algorithms.Graph_Algo;
-import dataStructure.edge_data;
-import dataStructure.node_data;
 import elements.*;
 import elements.Robot;
 import gui.Graph_GUI;
@@ -30,17 +29,19 @@ import utils.StdDraw;
 
 public class MyGameGUI extends Thread{
 
-	public DGraph d_g;
+	public static DGraph d_g;
 	public Graph_Algo algoGame;
 	public static Graph_GUI gui;
 	public String typeGame;
 	public int scenario_num;
-	public game_service game2;
+	public static game_service game2;
 	public Auto_Game a_g = new Auto_Game(this);
 	List<Fruit> fruits_arr;
 	List<Robot> robots_arr;
 	public Robot r= new Robot();
 	Fruit f=new Fruit();
+	private static KML_Logger kml;
+	private Thread t;
 	
 
 
@@ -260,6 +261,22 @@ public class MyGameGUI extends Thread{
 		}
 	}
 
+	
+	public static DGraph getGraph() {
+		return d_g;
+	}
+
+	public static void setGraph(DGraph graph) {
+		MyGameGUI.d_g = graph;
+	}
+
+	public static game_service getGame() {
+		return game2;
+	}
+
+	public static void setGame(game_service game) {
+		MyGameGUI.game2 = game;
+	}
 
 
 	public Robot findClosestRobot(double x, double y)
@@ -490,6 +507,23 @@ public void drawPoints() {
 		StdDraw.setPenRadius(0.001);
 		StdDraw.text(temp.getLocation().x() - 0.00028, temp.getLocation().y(), "" + temp.getKey());
 	}
+}
+
+
+public KML_Logger getKml() {
+	return MyGameGUI.kml;
+}
+
+public void setKml(KML_Logger kml) {
+	MyGameGUI.kml = kml;
+}
+
+public Thread getT() {
+	return t;
+}
+
+public void setT(Thread t) {
+	this.t = t;
 }
 
 

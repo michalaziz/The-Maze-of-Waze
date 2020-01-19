@@ -7,6 +7,9 @@ import elements.Edge;
 import elements.Fruit;
 import elements.Node;
 import elements.Robot;
+import elements.edge_data;
+import elements.node_data;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,4 +1,4 @@
-package dataStructure;
+package elements;
 /**
  * This interface represents the set of operations applicable on a 
  * directional edge(src,dest) in a (directional) weighted graph.

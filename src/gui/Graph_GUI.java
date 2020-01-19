@@ -14,11 +14,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import dataStructure.edge_data;
-import dataStructure.node_data;
 import elements.Fruit;
 import elements.Node;
 import elements.Robot;
+import elements.edge_data;
+import elements.node_data;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;

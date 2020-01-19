@@ -86,8 +86,8 @@ import javax.swing.KeyStroke;
 
 import algorithms.Graph_Algo;
 import dataStructure.graph;
-import dataStructure.node_data;
 import elements.Node;
+import elements.node_data;
 import gui.Graph_GUI;
 
 /**

@@ -2,8 +2,6 @@ package elements;
 
 import java.io.Serializable;
 
-import dataStructure.edge_data;
-
 public class Edge implements edge_data,Serializable {
 
 

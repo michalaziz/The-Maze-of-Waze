@@ -15,6 +15,8 @@ import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import dataStructure.*;
+import elements.edge_data;
+import elements.node_data;
 import utils.Point3D;
 /**
  * This empty class represents the set of graph-theory algorithms

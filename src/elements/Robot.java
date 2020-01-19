@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import dataStructure.node_data;
 import utils.Point3D;
 
 public class Robot {
@@ -68,19 +67,6 @@ public class Robot {
     	this.dest=0;
     }
 
-//    public void initRobot(String str){
-//        try {
-//            JSONObject obj1 = new JSONObject(str);
-//            JSONObject obj2 = obj1.getJSONObject("Robot");
-//            this.id = obj2.getInt("id");
-//            this.src = obj2.getInt("src");
-//            this.dest = obj2.getInt("dest");
-//            String pos = obj2.getString("pos");
-//            this.pos = new Point3D(pos);
-//        }catch (Exception e){e.printStackTrace();}
-//
-//    }
-    
     public void initRobot(String string) {
 
         try {
@@ -147,6 +133,11 @@ public class Robot {
     {
         this.speed =s;
     }
+    
+    public void setDest(int d)
+    {
+    	this.dest =d;
+    }
 
 
     public int getSrc()
@@ -172,6 +163,11 @@ public class Robot {
     public int getSpeed()
     {
         return this.speed;
+    }
+    
+    public int getDest()
+    {
+    	return this.dest;
     }
     
     public List<node_data> getToNextNode() { return toNextNode; }
