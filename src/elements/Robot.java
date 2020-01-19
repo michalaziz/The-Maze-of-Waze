@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONObject;
+
+import dataStructure.node_data;
 import utils.Point3D;
 
 public class Robot {
@@ -15,6 +17,7 @@ public class Robot {
     private double value;
     private int speed;
 	private int dest;
+	private List<node_data> toNextNode;
 
     //constructors
     public Robot(int src,int dest, Point3D p, int id, double v, int speed)
@@ -25,6 +28,18 @@ public class Robot {
         this.value=v;
         this.speed= speed;
         this.dest=dest;
+        
+
+    }
+    
+    public Robot(int src, Point3D p, int id, double v, int speed)
+    {
+        this.src=src;
+        this.pos=new Point3D(p);
+        this.id=id;
+        this.value=v;
+        this.speed= speed;
+
 
     }
     
@@ -53,17 +68,33 @@ public class Robot {
     	this.dest=0;
     }
 
-    public void initRobot(String str){
+//    public void initRobot(String str){
+//        try {
+//            JSONObject obj1 = new JSONObject(str);
+//            JSONObject obj2 = obj1.getJSONObject("Robot");
+//            this.id = obj2.getInt("id");
+//            this.src = obj2.getInt("src");
+//            this.dest = obj2.getInt("dest");
+//            String pos = obj2.getString("pos");
+//            this.pos = new Point3D(pos);
+//        }catch (Exception e){e.printStackTrace();}
+//
+//    }
+    
+    public void initRobot(String string) {
+
         try {
-            JSONObject obj1 = new JSONObject(str);
+            JSONObject obj1 = new JSONObject(string);
             JSONObject obj2 = obj1.getJSONObject("Robot");
             this.id = obj2.getInt("id");
             this.src = obj2.getInt("src");
-            this.dest = obj2.getInt("dest");
+            this.speed = obj2.getInt("speed");
             String pos = obj2.getString("pos");
-            this.pos = new Point3D(pos);
-        }catch (Exception e){e.printStackTrace();}
-
+            String[] loc = pos.split(",");
+            this.pos = new Point3D(Double.parseDouble(loc[0]), Double.parseDouble(loc[1]), Double.parseDouble(loc[2]));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     public Robot initRobotJson(String str) {
@@ -142,5 +173,9 @@ public class Robot {
     {
         return this.speed;
     }
+    
+    public List<node_data> getToNextNode() { return toNextNode; }
+
+    public void setToNextNode(List<node_data> toNextNode) { this.toNextNode = toNextNode; }
 
 }

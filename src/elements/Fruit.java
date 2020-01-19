@@ -13,6 +13,7 @@ public class Fruit {
 	private double value;
 	private int type;
 	private Point3D pos;
+    private boolean visit;
 
 	//constructors
 	public Fruit(double v, int t, Point3D p)
@@ -80,5 +81,8 @@ public class Fruit {
 
 	public Point3D getPos() { return this.pos; }
 
+    public boolean getVisit() { return this.visit; }
+
+    public void setVisit(boolean visit) { this.visit = visit; }
 
 }
