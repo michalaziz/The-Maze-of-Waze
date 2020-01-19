@@ -51,7 +51,6 @@ public class MyGameGUI extends Thread{
 
 	public void selectGame()
 	{
-
 		String st = JOptionPane.showInputDialog(null, "Choose scenario number between 0-23 :");
 		scenario_num = Integer.parseInt(st);
 		if (scenario_num > 23 || scenario_num < 0)
@@ -73,7 +72,6 @@ public class MyGameGUI extends Thread{
 		}
 	}
 
-	static int ii=0;
 	public void manualGame()
 	{
 		this.game = Game_Server.getServer(scenario_num);
@@ -91,15 +89,9 @@ public class MyGameGUI extends Thread{
 
 		while(game.isRunning())
 		{
-
 			moveRobotManual();	
-//			StdDraw.clear();
-//			drawPoints();
-//			drawEdges();
-//			drawFruits();
-//			drawRobots();
-//			StdDraw.enableDoubleBuffering();
-//			StdDraw.show();
+			drawRobots();
+			StdDraw.enableDoubleBuffering();
 		}
 
 
@@ -134,126 +126,57 @@ public class MyGameGUI extends Thread{
 
 	}
 
-	public void test ()
-	{
-		//StdDraw.enableDoubleBuffering();
-		if(StdDraw.isMousePressed())
-		{
-			System.out.println("yes "+ ii);
-			double x= StdDraw.mouseX();
-			double y = StdDraw.mouseY();
-			StdDraw.setPenRadius(0.02);
-			StdDraw.setPenColor(StdDraw.BLACK);
-			StdDraw.point(x, y);
-		}
-	}
 
 
 	public void moveRobotManual()
 	{
-		Robot closest=null;
-		boolean isOk=false;
 
-		double x=-100000,y=-100000;
+		double x=-1,y=-1;
 		boolean flagSrc=false;
+		int robot_index=-1;
 
 		node_data nDest=new Node();
 		if(StdDraw.isMousePressed() && flagSrc==false)
 		{
-			System.out.println("enterde src");
 			flagSrc=true;
-			//StdDraw.enableDoubleBuffering();
 			x=StdDraw.mouseX();
 			y=StdDraw.mouseY();
 			Point3D pSrc =new Point3D(x,y);
-			closest = new Robot(findClosestRobot(pSrc));
-			System.out.println(closest.getID());
+			robot_index=findClosestRobot(pSrc);
 
 		}
 
 
-		if(closest!=null)//find the next to move
+		if(StdDraw.isMousePressed() && robot_index != -1)//find the next to move
 		{
-
-			System.out.println("desttt");
-			
 			x=StdDraw.mouseX();
 			y=StdDraw.mouseY();
 			Point3D pDest =new Point3D(x,y);
 			nDest=findClosestNode(pDest);	
-
-			Iterator<edge_data> iter=d_g.getE(closest.getSrc()).iterator();
+			Iterator<edge_data> iter=d_g.getE(robots_arr.get(robot_index).getSrc()).iterator();
 
 			while(iter.hasNext())
 			{
 				if(iter.next().getDest()==nDest.getKey())
 				{
-					//game.chooseNextEdge(closest.getID(),nDest.getKey());
-					int id= closest.getID();
-					int src= closest.getSrc();
-					Robot r= new Robot(id, src, pDest);
-					this.robots_arr.clear();
-					System.out.println(robots_arr.size());
-					this.robots_arr.add(r);
+					robots_arr.get(robot_index).setPos(nDest.getLocation());
+					robots_arr.get(robot_index).setSrc(nDest.getKey());
 					StdDraw.clear();
 					drawPoints();
 					drawEdges();
 					drawFruits();
 					drawRobots();
-					//StdDraw.enableDoubleBuffering();
-					StdDraw.show();
-					
-					//closest.setPos(pDest);
-					//StdDraw.enableDoubleBuffering();
-
-					//StdDraw.picture(nDest.getLocation().x(), nDest.getLocation().y(), "rob.png", 0.0004, 0.0004);     
+					StdDraw.show();       
 				}
 			}
 		}
-
-
-
-		//		System.out.println(x);
-		//		System.out.println(y);
-		//		System.out.println(closest.getSrc());
-		//		System.out.println(robots_arr.size());
 	}
-	//		node_data nDest=new Node();
-	//		if(flagSrc==true)
-	//		{
-	//			StdDraw.enableDoubleBuffering();
-	//			x=StdDraw.mouseX();
-	//			y=StdDraw.mouseY();
-	//			Point3D pDest =new Point3D(x,y);
-	//			nDest=findClosestNode(pDest);	
-	//
-	//			Iterator<edge_data> iter=d_g.getE(closest.getSrc()).iterator();
-	//
-	//			while(iter.hasNext()&&isOk==false)
-	//			{
-	//				if(iter.next().getDest()==nDest.getKey())
-	//				{
-	//					game.chooseNextEdge(closest.getID(),nDest.getKey());
-	//					isOk=true;
-	//				}
-	//			}
-	//		}
-	//		else
-	//			JOptionPane.showMessageDialog(null, "try again dest");
-	//		if(isOk==true)
-	//		{
-	//			StdDraw.picture(nDest.getLocation().x(), nDest.getLocation().y(), "rob.png", 0.0004, 0.0004);
-	//			StdDraw.show();
-	//		}
 
 
-
-
-
-	public Robot findClosestRobot(Point3D pos)
+	public int findClosestRobot(Point3D pos)
 	{
 		Double min = Double.MAX_VALUE;
-		Robot closest =null;
+		int robot_index =-1;
 
 		for(int i=0; i<robots_arr.size(); i++)
 		{
@@ -261,11 +184,11 @@ public class MyGameGUI extends Thread{
 			if(distance<min)
 			{
 				min = distance;
-				closest = robots_arr.get(i);
+				robot_index= i;
 			}
 		}
 
-		return closest;
+		return robot_index;
 	}
 
 	public node_data findClosestNode(Point3D pos)
