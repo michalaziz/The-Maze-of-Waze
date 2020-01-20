@@ -13,11 +13,11 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
-
 import dataStructure.*;
 import elements.edge_data;
 import elements.node_data;
 import utils.Point3D;
+
 /**
  * This empty class represents the set of graph-theory algorithms
  * which should be implemented as part of Ex2 - Do edit this class.
@@ -38,11 +38,11 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 	public Graph_Algo(DGraph g) {
 		this.graph_A=g;
 	}
-	
+
 	public Graph_Algo(graph g) {
 		this.graph_A=g;
 	}
-	
+
 
 	/**
 	 * Initialization this set of algorithms on parameter g.
@@ -50,7 +50,7 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 	 */
 	@Override
 	public void init(graph g) {
-		this.graph_A=g;	
+		this.graph_A=g;
 	}
 
 	/**
@@ -59,25 +59,22 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 	 */
 	@Override
 	public void init(String file_name) {
-		try {    
-			FileInputStream file = new FileInputStream(file_name); 
-			ObjectInputStream in = new ObjectInputStream(file);  
-			graph_A = (graph) in.readObject(); 
-			in.close(); 
-			file.close();   
-			System.out.println("Object has been deserialized"); 
-
-		} 
-
-		catch(IOException ex) 
-		{ 
-			System.out.println("IOException is caught"); 
-		} 
-
-		catch(ClassNotFoundException ex) 
-		{ 
-			System.out.println("ClassNotFoundException is caught"); 
-		} 		
+		try {
+			FileInputStream file = new FileInputStream(file_name);
+			ObjectInputStream in = new ObjectInputStream(file);
+			graph_A = (graph) in.readObject();
+			in.close();
+			file.close();
+			System.out.println("Object has been deserialized");
+		}
+		catch(IOException ex)
+		{
+			System.out.println("IOException is caught");
+		}
+		catch(ClassNotFoundException ex)
+		{
+			System.out.println("ClassNotFoundException is caught");
+		}
 	}
 
 	/**
@@ -86,22 +83,22 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 	 */
 	@Override
 	public void save(String file_name) {
-        try
-        {    
-            FileOutputStream file = new FileOutputStream(file_name); 
-            ObjectOutputStream out = new ObjectOutputStream(file); 
-              
-            out.writeObject(this.graph_A); 
-              
-            out.close(); 
-            file.close(); 
-              
-            System.out.println("Object has been serialized"); 
-        }   
-        catch(IOException ex) 
-        { 
-            System.out.println("IOException is caught"); 
-        } 
+		try
+		{
+			FileOutputStream file = new FileOutputStream(file_name);
+			ObjectOutputStream out = new ObjectOutputStream(file);
+
+			out.writeObject(this.graph_A);
+
+			out.close();
+			file.close();
+
+			System.out.println("Object has been serialized");
+		}
+		catch(IOException ex)
+		{
+			System.out.println("IOException is caught");
+		}
 	}
 
 	/**
@@ -121,7 +118,7 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		dfsWithoutRecursion(v1);
 		for(node_data i : vertex)
 		{
-			if(i.getTag()==0) return false;	
+			if(i.getTag()==0) return false;
 		}
 		return true;
 	}
@@ -185,7 +182,7 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 		List<node_data> Nodes = new ArrayList<node_data>();
 		List<node_data> temp = new ArrayList<node_data>();
 		List<node_data> res = new ArrayList<node_data>();
-		
+
 		for(Integer key :targets)
 		{
 			if(graph_A.getE(key)==null)//the targets list is not connect
@@ -249,7 +246,7 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 				}
 			}
 		}
-		return res;	
+		return res;
 	}
 
 	/**
@@ -306,23 +303,19 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 	}
 
 
-	public double Dijkstra(node_data src, node_data dest)
-	{
+	public double Dijkstra(node_data src, node_data dest) {
 		Queue<node_data> Queue = new LinkedList<node_data>();
 		node_data src_node = this.graph_A.getNode(src.getKey());
 		src_node.setWeight(0);
 		Queue.add(src_node);
 
-		while(!Queue.isEmpty())
-		{
+		while (!Queue.isEmpty()) {
 			src_node.setTag(1);
 			Collection<edge_data> eSrc = this.graph_A.getE(src_node.getKey());
-			for(edge_data e : eSrc)
-			{
+			for (edge_data e : eSrc) {
 				node_data neibor = this.graph_A.getNode(e.getDest());
-				double neibor_Plus = src_node.getWeight()+ e.getWeight();
-				if(neibor.getWeight() > neibor_Plus)
-				{
+				double neibor_Plus = src_node.getWeight() + e.getWeight();
+				if (neibor.getWeight() > neibor_Plus) {
 					neibor.setWeight(src_node.getWeight() + e.getWeight());
 					neibor.setInfo("" + src_node.getKey());
 					Queue.add(neibor);
@@ -333,14 +326,17 @@ public class Graph_Algo implements graph_algorithms,Serializable{
 			src_node = Queue.peek();
 		}
 
-		if (this.graph_A.getNode(dest.getKey()).getWeight()==Double.MAX_VALUE)
-			throw new RuntimeException(" there is no path between src and dest ");
-		else{return this.graph_A.getNode(dest.getKey()).getWeight();}
-	}
-	
-	public static void main(String args[])
-	{
-		
+		if (this.graph_A.getNode(dest.getKey()).getWeight() == Double.MAX_VALUE){
+			System.out.println(" there is no path between src and dest !!! ");
+		     return Double.POSITIVE_INFINITY;}
+		else {
+			return this.graph_A.getNode(dest.getKey()).getWeight();
+		}
 	}
 
-}
+
+		public static void main (String args[])
+		{
+
+		}
+	}

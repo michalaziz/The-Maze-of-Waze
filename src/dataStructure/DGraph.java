@@ -13,6 +13,8 @@ import elements.node_data;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import Server.game_service;
 import utils.Point3D;
 
 import java.io.Serializable;
@@ -207,43 +209,82 @@ public class DGraph implements graph,Serializable {
 		return this.MC;
 	}
 
+	public void initGraph(game_service game) { 
+		String g = game.getGraph();
+		String fruitList = game.getFruits().toString();
+		JSONObject line1;
+		JSONObject line;
+		String info = game.toString();
 
-	public void init( String graph){
-
-		//init nodes
 		try {
-			JSONObject line= new JSONObject(graph);
-			JSONArray nodes = line.getJSONArray("Nodes");
-			System.out.println(nodes.length());
-			for(int i=0; i<nodes.length(); i++)
-			{
-				JSONObject current= nodes.getJSONObject(i);
-				int key= current.getInt("id");
+			int src_node = 0; 
+			line = new JSONObject(info);
+			JSONObject ttt = line.getJSONObject("GameServer");
+
+			/*Initialise the nodes*/
+			line1 = new JSONObject(g);
+			JSONArray nodes = line1.getJSONArray("Nodes");
+			JSONArray edges = line1.getJSONArray("Edges");
+			for(int i=0; i<nodes.length(); i++) {
+				JSONObject current = nodes.getJSONObject(i);
+				int key = current.getInt("id");
 				Object pos = current.get("pos");
-				Point3D p=new Point3D(pos.toString());
-				Node n = new Node(key,p);
+				Point3D p = new Point3D(pos.toString());
+				Node n = new Node(key, p);
 				this.addNode(n);
-				
 			}
-
-		}catch(Exception e){e.printStackTrace();}
-
-		//init edges
-		try {
-			JSONObject line= new JSONObject(graph);
-			JSONArray edges = line.getJSONArray("Edges");
-			System.out.println(edges.length());
-			for(int i=0; i<edges.length(); i++)
-			{
-				JSONObject current= edges.getJSONObject(i);
-				int src= current.getInt("src");
-				double weigth = current.getDouble("w");
+			/*Initialise the edges*/
+			for(int i=0; i<edges.length(); i++) {
+				JSONObject current = edges.getJSONObject(i);
+				int src = current.getInt("src");
 				int dest = current.getInt("dest");
-				this.connect(src, dest, weigth);
+				double w = current.getDouble("w");
+				this.connect(src, dest, w);
 			}
 
-		}catch(Exception e){e.printStackTrace();}
+		}
+		catch (Exception e) {
+		}
 	}
+
+
+
+public void init( String graph){
+
+	//init nodes
+	try {
+		JSONObject line= new JSONObject(graph);
+		JSONArray nodes = line.getJSONArray("Nodes");
+		System.out.println(nodes.length());
+		for(int i=0; i<nodes.length(); i++)
+		{
+			JSONObject current= nodes.getJSONObject(i);
+			int key= current.getInt("id");
+			Object pos = current.get("pos");
+			Point3D p=new Point3D(pos.toString());
+			Node n = new Node(key,p);
+			this.addNode(n);
+
+		}
+
+	}catch(Exception e){e.printStackTrace();}
+
+	//init edges
+	try {
+		JSONObject line= new JSONObject(graph);
+		JSONArray edges = line.getJSONArray("Edges");
+		System.out.println(edges.length());
+		for(int i=0; i<edges.length(); i++)
+		{
+			JSONObject current= edges.getJSONObject(i);
+			int src= current.getInt("src");
+			double weigth = current.getDouble("w");
+			int dest = current.getInt("dest");
+			this.connect(src, dest, weigth);
+		}
+
+	}catch(Exception e){e.printStackTrace();}
+}
 
 
 }

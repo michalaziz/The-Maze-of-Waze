@@ -37,6 +37,14 @@ public class Edge implements edge_data,Serializable {
     	this.info="";
     	this.tag=0;
     }
+    
+	public Edge() {
+		this.src = 0;
+		this.dest = 0;
+		this.tag = 0;
+		this.info = "";
+		this.weight = 0;
+	}
 	@Override
 	public int getSrc() {
 		return this.src;

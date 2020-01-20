@@ -10,6 +10,7 @@ import elements.Robot;
 import elements.edge_data;
 import elements.node_data;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import utils.Point3D;
@@ -20,214 +21,257 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class Auto_Game extends Thread {
-    public MyGameGUI my_game_gui;
+public class Auto_Game  {
+	public MyGameGUI myGG;
 
 
-          //constructor//
-    public Auto_Game(MyGameGUI g) {
-        this.my_game_gui = g;
-    }
+	//constructor//
+	public Auto_Game(MyGameGUI g) {
+		this.myGG = g;
+	}
 
 
-    /**
-     * This function start automatic game by the scenario num that the user choose.
-     * @param scenario_num is the number of the game that the user choose.
-     */
-    public void startGame(int scenario_num)  {
-        this.my_game_gui.game2 = Game_Server.getServer(scenario_num);
-        String graphGame = this.my_game_gui.game2.getGraph();
-        DGraph dg = new DGraph();
-        dg.init(graphGame); // initialize from Json points and edges
-        System.out.println(this.my_game_gui.game2.toString());
-        this.my_game_gui.fruits_arr = this.my_game_gui.initFruits(); // initialize from Json fruits
-       this.my_game_gui.robots_arr = this.my_game_gui.initRobots(); // initialize from Json robots
-        StdDraw.clear();
-        this.my_game_gui.paint(); // set scale, draw points,draw edges,draw fruits
-        addRobotAuto(this.my_game_gui.fruits_arr);
-        this.my_game_gui.drawRobots();
-        StdDraw.show();
-        this.my_game_gui.game2.startGame();
+	/**
+	 * this function update the graph the changes of moving robots and eating fruits
+	 * @throws JSONException
+	 */
+	public void updateGraphAuto() throws JSONException
+	{
+		StdDraw.picture(this.myGG.getXmin()+0.012, this.myGG.getYmin()+0.0038, "mall.png", 0.03,0.01);
+		this.myGG.drawPoints();
+		this.myGG.drawEdges();
+		this.myGG.drawFruits();
+		this.myGG.drawGrade(this.myGG.game2);
+		String fruitList = this.myGG.game2.getFruits().toString();
+		String robotList = this.myGG.game2.getRobots().toString();
+		this.myGG.fruits_arr.clear();
+		JSONArray f = new JSONArray(fruitList);
+		for(int i=0; i<f.length(); i++) {
+			JSONObject current = f.getJSONObject(i);
+			JSONObject current2 = current.getJSONObject("Fruit");
+			int type = current2.getInt("type");
+			double value = current2.getDouble("value");
+			Object pos = current2.get("pos");
+			Point3D p = new Point3D(pos.toString());
+			Fruit fu = new Fruit(value, type, p);
+			this.myGG.fruits_arr.add(fu);
+		}
 
-        while (my_game_gui.game2.isRunning())
-        {
-            moveRobots(this.my_game_gui.game2,this.my_game_gui.d_g);
-            StdDraw.clear();
-            StdDraw.enableDoubleBuffering();
-            StdDraw.show();
 
-        }
-
-    }
-
-    public void run() {
-
-    }
-
-    /**
-     * This function add robots to the graph.
-     * This function placed the robot next to the first fruits that found in the graph.
-     * @param f is the list fruits of the scenario tha choose by the user
-     */
-    public void addRobotAuto(List<Fruit> f) {
-        f = this.my_game_gui.fruits_arr;
-        int robNum = this.my_game_gui.robors_size();
-        this.my_game_gui.initRobots();
-        for (int j = 0; j < robNum; j++) {
-            edge_data e = isFruitOnEdge(f.get(0));
-            if(e!=null)
-            {
-                if((e.getSrc()<e.getDest())  && (f.get(0).getType()==-1))// type banana
-                {
-                    this.my_game_gui.game2.addRobot(e.getDest()); // place the robot in dest caz banana is eaten from high to low(dest is the maximum)
-                    node_data n= this.my_game_gui.d_g.getNode(e.getDest());
-                    this.my_game_gui.robots_arr.add(new Robot(e.getDest(),j,n.getLocation()));
-                }
-                else if((e.getSrc()>e.getDest()) && (f.get(0).getType()==-1)) //type banana
-                {
-                    this.my_game_gui.game2.addRobot(e.getSrc()); // place the robot in src
-                    node_data n= this.my_game_gui.d_g.getNode(e.getSrc());
-                    this.my_game_gui.robots_arr.add(new Robot(e.getSrc(),j,n.getLocation()));
-                }
-                else if ((e.getSrc()<e.getDest())  && (f.get(0).getType()== 1))// type apple
-                {
-                    this.my_game_gui.game2.addRobot(e.getSrc()); // place the robot in src
-                    node_data n= this.my_game_gui.d_g.getNode(e.getSrc());
-                    this.my_game_gui.robots_arr.add(new Robot(e.getSrc(),j,n.getLocation()));
-                }
-                else if ((e.getSrc()>e.getDest()) && (f.get(0).getType()==1)) // type apple
-                {
-                    this.my_game_gui.game2.addRobot(e.getDest()); // place the robot in dest caz apple is eaten from low to high(dest is the minimum)
-                    node_data n= this.my_game_gui.d_g.getNode(e.getDest());
-                    this.my_game_gui.robots_arr.add(new Robot(e.getDest(),j,n.getLocation()));
-                }
-                f.remove(0);
-            }
-        }
-    }
-
-    /**
-     * This function return edge that there is fruit on her , is there is no fruit -return null
-     * @param f is a fruit from the list fruits of the game
-     * @return edge that there is fruit on her - banana or apple
-     */
-    public edge_data isFruitOnEdge(Fruit f) {
-        Collection<node_data> nodesGame = this.my_game_gui.d_g.getV();
-        Iterator<node_data> iterNode = nodesGame.iterator();
-        while (iterNode.hasNext()) {
-            node_data n = iterNode.next();
-            Collection<edge_data> edgeN = this.my_game_gui.d_g.getE(n.getKey());
-            Iterator<edge_data> iterE = edgeN.iterator();
-            while (iterE.hasNext()) {
-                edge_data edgeF = iterE.next();
-                Point3D pSrc = this.my_game_gui.d_g.getNode(edgeF.getSrc()).getLocation();
-                Point3D pDest = this.my_game_gui.d_g.getNode(edgeF.getDest()).getLocation();
-                double dis1 = (pSrc.distance2D(pDest)); // Calculate distance between 2 points
-                double dis2 = Math.abs(f.getPos().distance2D(pSrc)); //Calculate distance between fruit pos and src location
-                double dist3 = Math.abs(f.getPos().distance2D(pDest)); //Calculate distance between fruit pos and dest location
-                double dist4 = Math.abs(dis2 + dist3);
-                double dist5 = Math.abs(dis1 - dist4);
-                if ((dist5 <= 0.0000001))// the fruit is on the edge
-                {
-                    if (((edgeF.getSrc() < edgeF.getDest()) && (f.getType() == 1)) ||  ((edgeF.getSrc() > edgeF.getDest()) && (f.getType() == -1))
-                    || (edgeF.getSrc() < edgeF.getDest() && (f.getType()==-1)) || ((edgeF.getSrc() > edgeF.getDest()) && (f.getType() == 1))) {
-                        return edgeF;
-                    }
-                }
-            }
-        }
-        return null; // there is no fruits
-    }
+		this.myGG.robots_arr.clear();
+		JSONArray r = new JSONArray(robotList);
+		for(int j=0; j<r.length(); j++) {
+			JSONObject line = r.getJSONObject(j);
+			JSONObject robotline = line.getJSONObject("Robot");
+			int id = robotline.getInt("id");
+			double value1 = robotline.getDouble("value");
+			int src = robotline.getInt("src");
+			int dest = robotline.getInt("dest");
+			int speed = robotline.getInt("speed");
+			Object pos1 = robotline.get("pos");
+			Point3D point = new Point3D(pos1.toString());
+			Robot ro = new Robot(src, dest, point, id, value1, speed);
+			this.myGG.robots_arr.add(ro);
+			this.myGG.game2.addRobot(ro.getSrc());
+			this.myGG.getKml().Place_Mark("data\\monkey.png",ro.getPos().toString());
+			StdDraw.picture(ro.getPos().x(), ro.getPos().y(),"rob.png",0.0005,0.0005);
+		}
+	}
 
 
 
-    /**
-     * Moves each of the robots along the edges .
-     * in case the robot is on a node, the next destination is chosen by the the function "nextNode".
-     * @param game is the scenario number that the user choose
-     * @param gg is the graph of this scenario
-     */
-    public void moveRobots(game_service game, DGraph gg) {
-        List<String> log = game.move();
-        if (log != null) {
-            long time = game.timeToEnd();
-            for (int i = 0; i < log.size(); i++) {
-                String robot_json = log.get(i);
-                try {
-                    JSONObject line = new JSONObject(robot_json);
-                    JSONObject robotM = line.getJSONObject("Robot");
-                    int key = robotM.getInt("id");
-                    int src = robotM.getInt("src");
-                    int desti = robotM.getInt("dest");
+	/**
+	 * This function start automatic game by the scenario num that the user choose.
+	 * @param scenario_num is the number of the game that the user choose.
+	 * @throws JSONException 
+	 */
+	public void startGame(int scenario_num) throws JSONException  {
+		this.myGG.setKml(new KML_Logger(scenario_num));
+		this.myGG.game2 = Game_Server.getServer(scenario_num);
+		String graphGame = this.myGG.game2.getGraph();
+		DGraph d = new DGraph();
+		d.init(graphGame);
+		myGG.d_g = d;
+		System.out.println(this.myGG.game2.toString());
+		this.myGG.fruits_arr = this.myGG.initFruits();
+		this.myGG.setScale();
+		StdDraw.picture(this.myGG.getXmin()+0.012, this.myGG.getYmin()+0.0038, "mall.png", 0.03,0.01);
+		this.myGG.paint();
+		addRobotAuto();
+		this.myGG.drawRobots();
 
-                    if (desti == -1) { // the robot on node
-                        desti = nextNode(this.my_game_gui.getRobots_arr().get(i), gg, this.my_game_gui.getFruits_arr());
-                        game.chooseNextEdge(key, desti);
-                        System.out.println("Turn to node: " + desti + "  time to end:" + (time / 1000));
-                        System.out.println(robotM);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
+		this.myGG.game2.startGame();
+		while(this.myGG.game2.isRunning())
+		{
+			moveAuto(this.myGG.game2,this.myGG.d_g);
+			this.myGG.drawGrade(this.myGG.game2);
+			StdDraw.clear();
+			StdDraw.enableDoubleBuffering();
+			updateGraphAuto();
+			StdDraw.show();
+		}
+		this.myGG.getKml().KML_Stop();
+		this.myGG.game2.stopGame();
 
-    /**
-     * the function gets Dgraph ,robot and list of fruits of the node that the robot placed on it
-     * @param g   is the Dgraph of the game
-     * @param roby is the robot we wont tp find for him the best path
-     * @return key of the node that the robot will go
-     */
-    public int nextNode(Robot roby, DGraph g, List<Fruit> gmF) {
+	}
 
-        Graph_Algo alg = new Graph_Algo(g);
-        edge_data e;
-        double dis = Integer.MAX_VALUE;
-        int walkto = -1;
-        double robyDis = 0;
-        int next = -1;
-        Iterator<Fruit> itF = gmF.iterator();
-        //Calculate the distance between the robot and the fruit
-        while (itF.hasNext()) {
-            Fruit f = itF.next();
-            if (f.getVisit() == false) {
-                e = this.isFruitOnEdge(f); // return the edge if it exist, else-return null
-                // check if the fruit is banana or apple
-                if (f.getType() == 1) ///////if apple///////
-                {
-                    if (e.getSrc() < e.getDest()) // The direction of eating the fruit is correct
-                    {
-                        robyDis = alg.shortestPathDist(roby.getSrc(), e.getDest());
-                        next = e.getSrc();
-                    } else if (e.getDest() < e.getSrc()) // The direction of eating the fruit is opposite
-                    {
-                        robyDis = alg.shortestPathDist(roby.getSrc(), e.getDest());
-                        next = e.getDest();// The robot will be moved from dest to src. its weighted directed graph
-                    }
-                } else if (f.getType() == -1) ////////if banana////////
-                {
-                    if (e.getSrc() > e.getDest()) // The direction of eating the fruit is correct
-                    {
-                        robyDis = alg.shortestPathDist(roby.getSrc(), e.getSrc());
-                        next = e.getDest();
-                    } else if (e.getDest() > e.getSrc()) {
-                        robyDis = alg.shortestPathDist(roby.getSrc(), e.getDest());
-                        next = e.getSrc();
-                    }
-                }
+	/**
+	 * This function add robots to the graph.
+	 * This function placed the robot next to the first fruits that found in the graph.
+	 * @param f is the list fruits of the scenario tha choose by the user
+	 */
+	public void addRobotAuto() {
+		List<Fruit> f = this.myGG.fruits_arr;
+		int robNum = this.myGG.robors_size();
+		this.myGG.initRobots();
+		for (int j = 0; j < robNum; j++) {
+			edge_data e = isFruitOnEdge(f.get(j));
+			if(e!=null)
+			{
+				if((e.getSrc()<e.getDest())  && (f.get(j).getType()==-1))// type banana
+				{
+					this.myGG.game2.addRobot(e.getDest()); // place the robot in dest caz banana is eaten from high to low(dest is the maximum)
+					node_data n= this.myGG.d_g.getNode(e.getDest());
+					this.myGG.robots_arr.add(new Robot(j,e.getDest(),n.getLocation()));
+				}
+				else if((e.getSrc()>e.getDest()) && (f.get(j).getType()==-1)) //type banana
+				{
+					this.myGG.game2.addRobot(e.getSrc()); // place the robot in src
+					node_data n= this.myGG.d_g.getNode(e.getSrc());
+					this.myGG.robots_arr.add(new Robot(j,e.getSrc(),n.getLocation()));
+				}
+				else if ((e.getSrc()<e.getDest())  && (f.get(j).getType()== 1))// type apple
+				{
+					this.myGG.game2.addRobot(e.getSrc()); // place the robot in src
+					node_data n= this.myGG.d_g.getNode(e.getSrc());
+					this.myGG.robots_arr.add(new Robot(j,e.getSrc(),n.getLocation()));
+				}
+				else if ((e.getSrc()>e.getDest()) && (f.get(j).getType()==1)) // type apple
+				{
+					this.myGG.game2.addRobot(e.getDest()); // place the robot in dest caz apple is eaten from low to high(dest is the minimum)
+					node_data n= this.myGG.d_g.getNode(e.getDest());
+					this.myGG.robots_arr.add(new Robot(j,e.getDest(),n.getLocation()));
+				}
+			}
+		}
+	}
 
-                if (robyDis < dis) {
-                    dis = robyDis;
-                    walkto = next;
-                }
-                f.setVisit(true);
-            }
-            roby.setToNextNode(alg.shortestPath(roby.getSrc(), walkto)); // set the shortest path to roby
-        }
-        return roby.getToNextNode().get(1).getKey();
-    }
+	/**
+	 * This function return edge that there is fruit on her , is there is no fruit -return null
+	 * @param f is a fruit from the list fruits of the game
+	 * @return edge that there is fruit on her - banana or apple
+	 */
+	public edge_data isFruitOnEdge(Fruit f) {
+		Collection<node_data> nodesGame = this.myGG.d_g.getV();
+		Iterator<node_data> iterNode = nodesGame.iterator();
+		while (iterNode.hasNext()) {
+			node_data n = iterNode.next();
+			Collection<edge_data> edgeN = this.myGG.d_g.getE(n.getKey());
+			Iterator<edge_data> iterE = edgeN.iterator();
+			while (iterE.hasNext()) {
+				edge_data edgeF = iterE.next();
+				Point3D pSrc = this.myGG.d_g.getNode(edgeF.getSrc()).getLocation();
+				Point3D pDest = this.myGG.d_g.getNode(edgeF.getDest()).getLocation();
+				double dis1 = (pSrc.distance2D(pDest)); // Calculate distance between 2 points
+				double dis2 = Math.abs(f.getPos().distance2D(pSrc)); //Calculate distance between fruit pos and src location
+				double dist3 = Math.abs(f.getPos().distance2D(pDest)); //Calculate distance between fruit pos and dest location
+				double dist4 = Math.abs(dis2 + dist3);
+				double dist5 = Math.abs(dis1 - dist4);
+				if ((dist5 <= 0.0000001))// the fruit is on the edge
+				{
+					if (((edgeF.getSrc() < edgeF.getDest()) && (f.getType() == 1)) ||  ((edgeF.getSrc() > edgeF.getDest()) && (f.getType() == -1))
+							|| (edgeF.getSrc() < edgeF.getDest() && (f.getType()==-1)) || ((edgeF.getSrc() > edgeF.getDest()) && (f.getType() == 1))) {
+						return edgeF;
+					}
+				}
+			}
+		}
+		return null; // there is no fruits
+	}
 
+	/**
+	 * Moves each of the robots along the edges .
+	 * in case the robot is on a node, the next destination is chosen by the the function "nextNode".
+	 * @param game is the scenario number that the user choose
+	 * @param gg is the graph of this scenario
+	 */
+	public void moveAuto(game_service game, DGraph d)
+	{
+		List<node_data> p = new ArrayList<node_data>();
+		int dest=-1;
+		Double min = Double.MAX_VALUE;
+		Graph_Algo algo = new Graph_Algo();
+		algo.init(d);
+		Robot r=null;
+		for(int i=0; i<this.myGG.robots_arr.size(); i++)
+			if(this.myGG.robots_arr.get(i).getDest() == -1){
+				{
+					r= this.myGG.robots_arr.get(i);
+					for(int j=0; j<this.myGG.fruits_arr.size(); j++)
+					{
+						Fruit fr = this.myGG.fruits_arr.get(j);
+						edge_data edge=getFruitEdge(fr);
+						double dis=algo.shortestPathDist(r.getSrc(),edge.getSrc());
+						if(dis<min)
+						{
+							min=dis;
+							dest=edge.getSrc();
+							p=algo.shortestPath(r.getSrc(), dest);
+							p.add(d.getNode(edge.getDest()));
+							p.remove(0);
+						}
+					}
+					dest = p.get(0).getKey();
+					game.chooseNextEdge(r.getID(), dest);	
+				}
+			}
+		game.move();
+	}
 
+	/**
+	 * this function gets fruit and returns the edge that the fruit on 
+	 * @param f
+	 * @return
+	 */
+	private edge_data getFruitEdge(Fruit f) {
+		Iterator<node_data> iterV = myGG.d_g.getV().iterator();
+		while(iterV.hasNext()) {
+			node_data nextV=iterV.next();
+			if (myGG.d_g.getE(nextV.getKey()) != null) {
+				Iterator<edge_data>iterE = myGG.d_g.getE(nextV.getKey()).iterator();
+				while (iterE.hasNext()) {
+					edge_data nextE = iterE.next();
+					node_data dest = myGG.d_g.getNode(nextE.getDest());
+					node_data src = myGG.d_g.getNode(nextE.getSrc());
+					double srcToFruit = distance(src.getLocation(), f.getPos());
+					double fruitToDest = distance(f.getPos(), dest.getLocation());
+					double dis = distance(src.getLocation(), dest.getLocation());
+					if (srcToFruit + fruitToDest <= dis + 0.000001) {
+						if (f.getType() == -1 && src.getKey() > dest.getKey()) 
+							return nextE;
+						if (f.getType() == 1 && src.getKey() < dest.getKey()) 
+							return nextE;
+					}
+				}
+			}
+		}
+		return null;
+	}
 
+	/**
+	 * calculate distance between points
+	 * @param src
+	 * @param dest
+	 * @return
+	 */
+	private static double distance(Point3D src, Point3D dest) {
+		double result = 0;
+		double x1 = src.x();
+		double x2 = dest.x();
+		double y1 = src.y();
+		double y2 = dest.y();
+		result = Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2);
+		result = Math.sqrt(result);
+		return result;
+	}
 }
