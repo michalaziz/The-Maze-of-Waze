@@ -13,38 +13,38 @@ import java.time.LocalDateTime;
 
 class KML_Logger {
 
-    private int level;
-    private StringBuffer str;
+    private int level_game;
+    private StringBuffer s;
 
     /**
-     * simple constructor
-     * @param level
+     * constructor
+     * @param level is the level in the game
      */
     KML_Logger(int level) {
-        this.level = level;
-        str = new StringBuffer();
+        this.level_game = level;
+        s = new StringBuffer();
         //KML_Play();
-        KML_Start();
+        start_KML();
     }
-    
+
     /**
-     * this function initialise the working platform to KML
+     * this function initialize kml to the game
      */
-    private void KML_Start(){
-        str.append(
+    private void start_KML(){
+        s.append(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
                         "<kml xmlns=\"http://earth.google.com/kml/2.2\">\r\n" +
                         "  <Document>\r\n" +
-                        "    <name>" + "Game stage :"+level + "</name>" +"\r\n"
+                        "    <name>" + "Game stage :"+ level_game + "</name>" +"\r\n"
         );
-        KML_node();
+        kmlN();
     }
-    
+
     /**
-     * this function initialise the node icon to KML
+     * This function initialize the node to KML
      */
-    private void KML_node(){
-        str.append(" <Style id=\"node\">\r\n" +
+    private void kmlN(){
+        s.append(" <Style id=\"node\">\r\n" +
                 "      <IconStyle>\r\n" +
                 "        <Icon>\r\n" +
                 "          <href>http://maps.google.com/mapfiles/kml/pal3/icon35.png</href>\r\n" +
@@ -53,14 +53,15 @@ class KML_Logger {
                 "      </IconStyle>\r\n" +
                 "    </Style>"
         );
-        KML_Fruit();
+
+        kmlF();
     }
-    
+
     /**
-     * this function initialise the Fruits icon to KML (Type 1 and -1)
+     * this function initialize the fruits to KML
      */
-    private void KML_Fruit(){
-        str.append(
+    private void kmlF(){
+        s.append(
                 " <Style id=\"fruit_-1\">\r\n" +
                         "      <IconStyle>\r\n" +
                         "        <Icon>\r\n" +
@@ -78,14 +79,15 @@ class KML_Logger {
                         "      </IconStyle>\r\n" +
                         "    </Style>"
         );
-        KML_Robot();
+
+        kmlR();
     }
-    
+
     /**
      * this function initialise the Robots icon to KML
      */
-    private void KML_Robot(){
-        str.append(
+    private void kmlR(){
+        s.append(
                 " <Style id=\"robot\">\r\n" +
                         "      <IconStyle>\r\n" +
                         "        <Icon>\r\n" +
@@ -104,9 +106,9 @@ class KML_Logger {
      * @param id
      * @param location
      */
-    void Place_Mark(String id, String location){
+    void placeMark(String id, String location){
         LocalDateTime Present_time = LocalDateTime.now();
-        str.append(
+        s.append(
                 "    <Placemark>\r\n" +
                         "      <TimeStamp>\r\n" +
                         "        <when>" + Present_time+ "</when>\r\n" +
@@ -119,19 +121,19 @@ class KML_Logger {
         );
     }
 
-    
-    void KML_Stop(){
-        str.append("  \r\n</Document>\r\n" +
+
+    void kmlPause(){
+        s.append("  \r\n</Document>\r\n" +
                 "</kml>");
-        SaveFile();
+        saveKML();
     }
 
-   
-    private void SaveFile(){
+
+    private void saveKML(){
         try {
-            File file=new File("data/"+level+".kml");
+            File file=new File("data/"+ level_game +".kml");
             PrintWriter pw=new PrintWriter(file);
-            pw.write(str.toString());
+            pw.write(s.toString());
             pw.close();
         } catch (Exception e) {
             e.printStackTrace();

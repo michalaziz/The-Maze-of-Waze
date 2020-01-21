@@ -1,7 +1,6 @@
 package elements;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -15,8 +14,8 @@ public class Robot {
     private int id;
     private double value;
     private int speed;
-	private int dest;
-	private List<node_data> toNextNode;
+    private int dest;
+    private List<node_data> toNextNode;
 
     //constructors
     public Robot(int src,int dest, Point3D p, int id, double v, int speed)
@@ -27,10 +26,10 @@ public class Robot {
         this.value=v;
         this.speed= speed;
         this.dest=dest;
-        
+
 
     }
-    
+
     public Robot(int src, Point3D p, int id, double v, int speed)
     {
         this.src=src;
@@ -41,7 +40,7 @@ public class Robot {
 
 
     }
-    
+
     public Robot(int id, int src, Point3D p)
     {
         this.src=src;
@@ -61,10 +60,10 @@ public class Robot {
 
     //Default constructor
     public Robot(){
-    	this.id=0;
-    	this.pos=null;
-    	this.src=0;
-    	this.dest=0;
+        this.id=0;
+        this.pos=null;
+        this.src=0;
+        this.dest=0;
     }
 
     public void initRobot(String string) {
@@ -82,9 +81,9 @@ public class Robot {
             e.printStackTrace();
         }
     }
-    
+
     public Robot initRobotJson(String str) {
-    	Robot temp = new Robot();
+        Robot temp = new Robot();
 
         try {
             JSONObject obj1 = new JSONObject(str);
@@ -99,13 +98,13 @@ public class Robot {
         }
         return temp;
     }
-    
-	public ArrayList<Robot> initRobots(List<String>robotList) {
-		ArrayList<Robot> ans = new ArrayList<>();
-		for(String r:robotList)
-			ans.add(initRobotJson(r));
-		return ans;
-	}
+
+    public ArrayList<Robot> initRobots(List<String>robotList) {
+        ArrayList<Robot> ans = new ArrayList<>();
+        for(String r:robotList)
+            ans.add(initRobotJson(r));
+        return ans;
+    }
 
     // getters and setters
 
@@ -116,7 +115,7 @@ public class Robot {
 
     public void setPos(Point3D p)
     {
-       this.pos=new Point3D(p);
+        this.pos=new Point3D(p);
     }
 
     public void setID(int id)
@@ -133,10 +132,10 @@ public class Robot {
     {
         this.speed =s;
     }
-    
+
     public void setDest(int d)
     {
-    	this.dest =d;
+        this.dest =d;
     }
 
 
@@ -164,12 +163,12 @@ public class Robot {
     {
         return this.speed;
     }
-    
+
     public int getDest()
     {
-    	return this.dest;
+        return this.dest;
     }
-    
+
     public List<node_data> getToNextNode() { return toNextNode; }
 
     public void setToNextNode(List<node_data> toNextNode) { this.toNextNode = toNextNode; }
