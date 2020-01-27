@@ -20,7 +20,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class Auto_Game  {
+import javax.swing.JOptionPane;
+
+public class Auto_Game extends Thread {
     public MyGameGUI myGG;
 
 
@@ -33,9 +35,12 @@ public class Auto_Game  {
     /**
      * this function update the graph the changes of moving robots and eating fruits
      * @throws JSONException
+     * @throws InterruptedException 
      */
-    public void updateGraphAuto() throws JSONException
+    public void updateGraphAuto() throws JSONException, InterruptedException
     {
+    	
+
         StdDraw.picture(this.myGG.getXmin()+0.012, this.myGG.getYmin()+0.0038, "mall.png", 0.03,0.01);
         this.myGG.drawPoints();
         this.myGG.drawEdges();
@@ -57,6 +62,7 @@ public class Auto_Game  {
         }
 
 
+        
         this.myGG.robots_arr.clear();
         JSONArray r = new JSONArray(robotList);
         for(int j=0; j<r.length(); j++) {
@@ -76,6 +82,8 @@ public class Auto_Game  {
             StdDraw.picture(ro.getPos().x(), ro.getPos().y(),"rob.png",0.0005,0.0005);
         }
     }
+    
+    
 
 
 
@@ -83,8 +91,10 @@ public class Auto_Game  {
      * This function start automatic game by the scenario num that the user choose.
      * @param scenario_num is the number of the game that the user choose.
      * @throws JSONException
+     * @throws InterruptedException 
      */
-    public void startGame(int scenario_num) throws JSONException  {
+    public void startGame(int scenario_num) throws JSONException, InterruptedException  {
+    	//sleep(100);
         this.myGG.setKml(new KML_Logger(scenario_num));
         this.myGG.game2 = Game_Server.getServer(scenario_num);
         String graphGame = this.myGG.game2.getGraph();
@@ -98,7 +108,7 @@ public class Auto_Game  {
         this.myGG.paint();
         addRobotAuto();
         this.myGG.drawRobots();
-
+        
         this.myGG.game2.startGame();
         while(this.myGG.game2.isRunning())
         {
@@ -106,20 +116,35 @@ public class Auto_Game  {
             this.myGG.drawGrade(this.myGG.game2);
             StdDraw.clear();
             StdDraw.enableDoubleBuffering();
+            sleep(65);
             updateGraphAuto();
             StdDraw.show();
         }
+        
         this.myGG.getKml().kmlPause();
         this.myGG.game2.stopGame();
-
+        String temp=this.myGG.game2.toString();
+        JSONObject o= (JSONObject) new JSONObject(temp).get("GameServer");
+        int gr= o.getInt("grade");
+        int mov= o.getInt("moves");
+        JOptionPane.showMessageDialog(null,"GAME OVER\n"+"moves:"+mov+"\n grade:"+gr);
     }
+//        String temp=this.myGG.game2.toString();
+//        JSONObject o= (JSONObject) new JSONObject(temp).get("GameServer");
+//        int gr= o.getInt("grade");
+//        int mov= o.getInt("moves");
+//        JOptionPane.showMessageDialog(null,"GAME OVER\n"+"moves:"+mov+"\n grade:"+gr);
+        
+    
+
 
     /**
      * This function add robots to the graph.
      * This function placed the robot next to the first fruits that found in the graph.
      * @param f is the list fruits of the scenario tha choose by the user
+     * @throws InterruptedException 
      */
-    public void addRobotAuto() {
+    public void addRobotAuto() throws InterruptedException {
         List<Fruit> f = this.myGG.fruits_arr;
         int robNum = this.myGG.robors_size();
         this.myGG.initRobots();
@@ -193,8 +218,9 @@ public class Auto_Game  {
      * in case the robot is on a node, the next destination is chosen by the the function "nextNode".
      * @param game is the scenario number that the user choose
      * @param gg is the graph of this scenario
+     * @throws InterruptedException 
      */
-    public void moveAuto(game_service game, DGraph d)
+    public void moveAuto(game_service game, DGraph d) throws InterruptedException
     {
         List<node_data> p = new ArrayList<node_data>();
         int dest=-1;
@@ -221,7 +247,9 @@ public class Auto_Game  {
                         }
                     }
                     dest = p.get(0).getKey();
+                    
                     game.chooseNextEdge(r.getID(), dest);
+                    
                 }
             }
         game.move();
